@@ -6,7 +6,5 @@
 int main (void) 
 {
 
-addStudent();
-addBook();
-
+    menu();
 }
