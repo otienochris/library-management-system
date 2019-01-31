@@ -3,16 +3,16 @@ void menu(void);
 FILE *bookPtr, *studentPtr, *userPtr;
 
 
-// a function that adds a book(s) to books.bin file
+// a function that adds a book(s) to books.dat file
 void addBook(void)
 {
     system("clear");    // works only for linux sys
 
-    bookPtr = fopen("books.bin","ab+");
+    bookPtr = fopen("books.dat","ab+");
     
     if (bookPtr == NULL)
     {
-        puts("Error opening books.bin");
+        puts("Error opening books.dat");
         exit(1);
     }
     else
@@ -37,11 +37,11 @@ void addStudent(void)
 {
     system("clear");  // works only for linux sys
 
-    studentPtr = fopen("student.bin", "ab+");
+    studentPtr = fopen("student.dat", "ab+");
 
     if (studentPtr == NULL)
     {
-        puts("Error opening students.bin");
+        puts("Error opening students.dat");
         exit(1);
     }
     else
@@ -86,12 +86,12 @@ void searchBook(void)
     char search_title[30];
     unsigned int search_id;
 
-    bookPtr = fopen("books.bin", "r");
+    bookPtr = fopen("books.dat", "rb+");
     fread(&book, sizeof(BOOK), 1, bookPtr);
 
     if (bookPtr == NULL)
     {
-        puts("Error opening the books.bin file");
+        puts("Error opening the books.dat file");
     }
     else
     {   
@@ -112,7 +112,7 @@ void searchBook(void)
                 puts("The id entered is not valid");
             }
         }
-        else if
+        else if(entry == 2)
         {
             
             puts("Enter the book title that you want to search for:");
@@ -126,45 +126,39 @@ void searchBook(void)
                 puts("The title entered is not valid");                
             }
         }
+        else
+        {
+            puts("\t\tInvalid choice\n\tredirecting...\n");
+            sleep(2);
+            menu();
+        }
     fclose(bookPtr);
     }
     menu();
 
 }
 
-
-void menu(void)
+void viewBooks(void)
 {
-    system("clear");    // works only for linux sys
+    FILE *bookPtr;
 
-    int choice;
+    BOOK book;
+    bookPtr = fopen("books.txt", "rb");
 
-    puts("1 -> Add student\n"
-        "2 -> add Book\n"
-        "3 -> search for a Book\n"
-        "4 -> exit the program");
-    printf("%s", ">");
-    scanf("%d", &choice);
-
-    switch (choice)
+    if (bookPtr == NULL)
     {
-    case 1:
-        addStudent();
-        break;
-    case 2:
-        addBook();
-        break;
-    case 3:
-        searchBook();
-        break;
-    case 4:
-        puts("Thanks for spending time here.");
-        exit(1);
-
-    default:
-        puts("Invalid entry");
-        menu();
-        break;
+        puts("Error opening the book.txt file");
     }
-
+    else
+    {
+        while (!feof(bookPtr))
+        {
+            int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
+            if(result != 0 && book.id != 0)
+            {
+                printf("%d\t%s%s%d", book.id, book.title, book.author, book.copies);
+            }
+        }
+        fclose(bookPtr);
+    }
 }
