@@ -1,6 +1,11 @@
 void menu(void);
+
 //  global pointer
 FILE *bookPtr, *studentPtr, *userPtr;
+
+// global struct declaration
+BOOK book;
+STUDENT student;
 
 
 // a function that adds a book(s) to books.dat file
@@ -17,14 +22,15 @@ void addBook(void)
     }
     else
     {
-        BOOK book ;
-        // = {0, "", "", 0}
         puts("Enter the id, title, author and copies");
+        printf("%s",">");
+        scanf("%u%29s%29s%u", &book.id, book.title, book.author, &book.copies);
+
         while (!feof(stdin))
         {
             printf("%s",">");
-            scanf("%u%29s%29s%u", &book.id, book.title, book.title, &book.copies);
             fwrite(&book, sizeof( BOOK ), 1, bookPtr);  
+            scanf("%u%29s%29s%u", &book.id, book.title, book.author, &book.copies);
         }
         fclose(bookPtr);
     }
@@ -46,10 +52,10 @@ void addStudent(void)
     }
     else
     {
-        STUDENT student;
-            puts("Enter the id, first name and last name");
-            printf("%s",">");
-            scanf("%29s%29s%29s", student.id, student.fname, student.lname);
+        puts("Enter the id, first name and last name");
+        printf("%s",">");
+        scanf("%29s%29s%29s", student.id, student.fname, student.lname);
+
         while (!feof(stdin))
         {
             
@@ -78,87 +84,37 @@ void addStudent(void)
 // search for a book
 void searchBook(void)
 {
-    system("clear");    // works only for linux sys
+    
+}
 
-    FILE *bookPtr;
-    BOOK book;
-
-    char search_title[30];
-    unsigned int search_id;
-
-    bookPtr = fopen("books.dat", "rb+");
-    fread(&book, sizeof(BOOK), 1, bookPtr);
-
-    if (bookPtr == NULL)
-    {
-        puts("Error opening the books.dat file");
-    }
-    else
-    {   
-        unsigned int entry;
-        puts("Enter 1 to search using book id or "
-            "Enter 2 to search using book title");
-        scanf("%u", &entry);
-        if (entry == 1)
-        {
-            puts("Enter book id to search:");
-            scanf("%u", &search_id);
-            if ( search_id == book.id)
-            {
-                printf("%ls%29s\n", &book.id, book.title);                
-            }
-            else
-            {
-                puts("The id entered is not valid");
-            }
-        }
-        else if(entry == 2)
-        {
-            
-            puts("Enter the book title that you want to search for:");
-            scanf("%29s", search_title);
-            if ( search_title == book.title )
-            {
-                printf("%ls%29s\n", &book.id, book.title);
-            }
-            else
-            {
-                puts("The title entered is not valid");                
-            }
-        }
-        else
-        {
-            puts("\t\tInvalid choice\n\tredirecting...\n");
-            sleep(2);
-            menu();
-        }
-    fclose(bookPtr);
-    }
-    menu();
+// view all students
+void viewStudents(void)
+{
 
 }
 
 void viewBooks(void)
 {
-    FILE *bookPtr;
 
-    BOOK book;
-    bookPtr = fopen("books.txt", "rb");
+    bookPtr = fopen("books.dat", "rb");
 
     if (bookPtr == NULL)
     {
-        puts("Error opening the book.txt file");
+        puts("Error opening the book.dat file");
     }
     else
     {
+        puts("Book_id\tTitle\tAuthor\tCopies");
         while (!feof(bookPtr))
         {
             int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
             if(result != 0 && book.id != 0)
             {
-                printf("%d\t%s%s%d", book.id, book.title, book.author, book.copies);
+                printf("%d\t%s\t%s\t%d\n", book.id, book.title, book.author, book.copies);
             }
         }
+
         fclose(bookPtr);
+
     }
 }
