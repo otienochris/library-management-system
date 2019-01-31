@@ -1,42 +1,5 @@
 void menu(void);
 
-//  global pointer
-FILE *bookPtr, *studentPtr, *userPtr;
-
-// global struct declaration
-BOOK book;
-STUDENT student;
-
-
-// a function that adds a book(s) to books.dat file
-void addBook(void)
-{
-    system("clear");    // works only for linux sys
-
-    bookPtr = fopen("books.dat","ab+");
-    
-    if (bookPtr == NULL)
-    {
-        puts("Error opening books.dat");
-        exit(1);
-    }
-    else
-    {
-        puts("Enter the id, title, author and copies");
-        printf("%s",">");
-        scanf("%u%29s%29s%u", &book.id, book.title, book.author, &book.copies);
-
-        while (!feof(stdin))
-        {
-            printf("%s",">");
-            fwrite(&book, sizeof( BOOK ), 1, bookPtr);  
-            scanf("%u%29s%29s%u", &book.id, book.title, book.author, &book.copies);
-        }
-        fclose(bookPtr);
-    }
-    menu();
-}
-
 
 // a function that adds a student's information
 void addStudent(void)
@@ -81,40 +44,8 @@ void addStudent(void)
     menu();
 }
 
-// search for a book
-void searchBook(void)
-{
-    
-}
-
 // view all students
 void viewStudents(void)
 {
 
-}
-
-void viewBooks(void)
-{
-
-    bookPtr = fopen("books.dat", "rb");
-
-    if (bookPtr == NULL)
-    {
-        puts("Error opening the book.dat file");
-    }
-    else
-    {
-        puts("Book_id\tTitle\tAuthor\tCopies");
-        while (!feof(bookPtr))
-        {
-            int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
-            if(result != 0 && book.id != 0)
-            {
-                printf("%d\t%s\t%s\t%d\n", book.id, book.title, book.author, book.copies);
-            }
-        }
-
-        fclose(bookPtr);
-
-    }
 }
