@@ -64,21 +64,24 @@ void searchBook(void)
         while (!feof(stdin))
         {
             int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
-            if(result != 0 && book.id != 0)
-            {
-                // book.title && search_title
-                if (strcmp(book.title, search_title)==0)
+  
+            if ((strcmp(book.title, search_title)==0) && (result != 0) )
                 {
                 printf("\t\t%d\t\t%s\t\t%s\t\t%d\n", book.id, book.title, book.author, book.copies);
                 }
-                    
+
+        puts("\n\t\tSearch for another book: ");
+        puts("\t\tTo Exit to main menu press: \n\t\tctrl+D (linux) or ctrl+Z(windows)");
+        printf("%s","\t\t>");
+        scanf("%29s", search_title);
+
             }
-        }
 
         fclose(bookPtr);
+        menu();
+        }
     }
-    menu();
-}
+
 
 
 void viewBooks(void)
