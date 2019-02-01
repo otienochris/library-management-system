@@ -24,20 +24,39 @@ void addBook(void)
     }
     else
     {
-        puts("\t\tEnter the id, title, author and copies");
-        printf("%s","\t\t>");
-        scanf("%u%29s%29s%u", &book.id, book.title, book.author, &book.copies);
+        unsigned int book_id;
+        printf("%s", "\t\tEnter book_id: ");
+        scanf("%u", &book_id);
 
+        while (!feof(bookPtr))
+        {
+            fread(&book, sizeof(BOOK), 1, bookPtr);
+            if (book.id == book_id)
+                {
+                    puts("\v\t\tError: The id exist!");
+                    sleep(1);
+                    menu();
+                }
+        }
+                
+        puts("\t\tEnter the title, author and copies");
+        printf("%s","\t\t>");
+        scanf("%29s%29s%u", book.title, book.author, &book.copies);
+
+        book.id = book_id;
         while (!feof(stdin))
         {
             printf("%s",">");
             fwrite(&book, sizeof( BOOK ), 1, bookPtr);  
-            scanf("%u%29s%29s%u", &book.id, book.title, book.author, &book.copies);
+            scanf("%29s%29s%u", book.title, book.author, &book.copies);
+        }
         }
         fclose(bookPtr);
-    }
-    menu();
+
+        menu();
 }
+    
+
 
 
 
@@ -61,29 +80,34 @@ void searchBook(void)
         printf("%s","\t\t>");
         scanf("%29s", search_title);
 
+        puts("\v\t\tBook_id\t\tTitle\t\tAuthor\t\tCopies");            
         while (!feof(stdin))
         {
+            
+        while (!feof(bookPtr))
+        {
             int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
-  
+
             if ((strcmp(book.title, search_title)==0) && (result != 0) )
                 {
-                printf("\t\t%d\t\t%s\t\t%s\t\t%d\n", book.id, book.title, book.author, book.copies);
+                printf("\v\t\t%d\t\t%s\t\t%s\t\t%d\n", book.id, book.title, book.author, book.copies);
                 }
 
-        puts("\n\t\tSearch for another book: ");
-        puts("\t\tTo Exit to main menu press: \n\t\tctrl+D (linux) or ctrl+Z(windows)");
+        }
+        
+        // puts("\n\t\tSearch for another book: ");
+        puts("\v\t\tTo Exit to main menu press: \n\t\tctrl+D (linux) or ctrl+Z(windows)");
         printf("%s","\t\t>");
         scanf("%29s", search_title);
+        }
 
-            }
 
         fclose(bookPtr);
         menu();
         }
-    }
+}
 
-
-
+// a function that returns all the books' inventory
 void viewBooks(void)
 {
     system("clear");
@@ -119,4 +143,31 @@ void viewBooks(void)
     {
         menu();
     }
+}
+
+void validatedBookId(void)
+{
+    bookPtr = fopen("books.dat","ab+");
+
+    unsigned int book_id;
+    printf("%s", "\n\t\tEnter id: ");
+    scanf("%u", &book_id);
+
+    while(!feof(bookPtr)){
+
+        fread(&book, sizeof(BOOK), 1, bookPtr);
+        unsigned int bookie = book.id;
+        
+        if (bookie == book_id)
+        {
+            system("clear");
+            puts("Error: The id exists");
+            menu();    
+        }
+        else
+        {
+            addBook();
+        }
+    }
+    fclose(bookPtr);
 }

@@ -37,6 +37,7 @@ void menu(void)
         addStudent();
         break;
     case 2:
+        // validatedBookId();
         addBook();
         break;
     case 3:
@@ -46,8 +47,8 @@ void menu(void)
         viewBooks();
         break;
     case 5:
-        puts("Thanks for spending time here.");
-        puts("just a minute ... ");
+        puts("\v\t\tThanks for spending time here.");
+        puts("\t\tjust a minute ... \n");
         sleep(2);
         exit(1);
 
