@@ -1,11 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include "structs.c"
-#include "functions.c"
+#include <unistd.h> // clear-screen
+#include <string.h>
+#include "structs.c" // contains all the structs used 
+#include "books.c"  // contain functions that involves the books
+#include "students.c"  // contains all functions that involve the book
 
 
 void menu (void);
+
+// main function: the program starts executing here
 int main (void) 
 {
 
@@ -19,12 +23,12 @@ void menu(void)
 
     int choice;
 
-    puts("1 -> Add student\n"
-        "2 -> add Book\n"
-        "3 -> search for a Book\n"
-        "4 -> view books\n"
-        "5 -> exit the program");
-    printf("%s", ">");
+    puts("\v\v\t\t1 -> Add student\n"
+        "\t\t2 -> add Book\n"
+        "\t\t3 -> search for a Book\n"
+        "\t\t4 -> view books\n"
+        "\t\t5 -> exit the program");
+    printf("%s", "\v\t\t>");
     scanf("%d", &choice);
 
     switch (choice)
@@ -33,6 +37,7 @@ void menu(void)
         addStudent();
         break;
     case 2:
+        // validatedBookId();
         addBook();
         break;
     case 3:
@@ -42,8 +47,8 @@ void menu(void)
         viewBooks();
         break;
     case 5:
-        puts("Thanks for spending time here.");
-        puts("just a minute ... ");
+        puts("\v\t\tThanks for spending time here.");
+        puts("\t\tjust a minute ... \n");
         sleep(2);
         exit(1);
 
