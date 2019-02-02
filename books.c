@@ -7,56 +7,66 @@ FILE *bookPtr, *studentPtr, *userPtr;
 BOOK book;
 STUDENT student;
 
-
 // a function that adds a book(s) to books.dat file
+    
 void addBook(void)
 {
-    system("clear");    // works only for linux sys
+    int book_id;
 
-
-    puts("\t\tADD BOOK:");
-    bookPtr = fopen("books.dat","ab+");
+    bookPtr = fopen("books.dat", "a+");
     
-    if (bookPtr == NULL)
-    {
-        puts("Error opening books.dat");
-        exit(1);
-    }
-    else
-    {
-        unsigned int book_id;
-        printf("%s", "\t\tEnter book_id: ");
-        scanf("%u", &book_id);
-
+    printf("%s", "\v\t\tEnter book id: ");
+    scanf("%d", &book_id);
+        
+            
         while (!feof(bookPtr))
         {
             fread(&book, sizeof(BOOK), 1, bookPtr);
-            if (book.id == book_id)
-                {
-                    puts("\v\t\tError: The id exist!");
-                    sleep(1);
-                    menu();
-                }
+            if (book_id == book.id)
+            {
+                puts("Error: The book id exists");
+                sleep(1);
+                book_id = 0 ;
+            }
         }
+
+
+        
+        // printf("%s", "\v\t\tEnter book id (integers): ");
+        // scanf("%d", &book.id);
+
+        while (book_id != 0){
+            book.id = book_id;
+            printf("%s", "\n title, author and copies");
+
+            fscanf(stdin, "%14s%9s%d", book.title, book.author, &book.copies);
+
+            // fseek(bookPtr, (book.id - 1)* sizeof(BOOK), SEEK_SET);
+         
+            fwrite(&book, sizeof(BOOK), 1, bookPtr);
+
+            int choice;
+            printf("%s", "\n\t\tEnter 1 to continue or 0 to exit:  ");
+            scanf("%d", &choice);
+            
+            if (choice == 1)
+            {
+                addBook1();
+            }
+            else
+            {
+                menu();
+            }
                 
-        puts("\t\tEnter the title, author and copies");
-        printf("%s","\t\t>");
-        scanf("%29s%29s%u", book.title, book.author, &book.copies);
 
-        book.id = book_id;
-        while (!feof(stdin))
-        {
-            printf("%s",">");
-            fwrite(&book, sizeof( BOOK ), 1, bookPtr);  
-            scanf("%29s%29s%u", book.title, book.author, &book.copies);
-        }
-        }
-        fclose(bookPtr);
 
-        menu();
-}
+        }
+
+
+        menu ();
     
 
+}
 
 
 
@@ -96,7 +106,7 @@ void searchBook(void)
         }
         
         // puts("\n\t\tSearch for another book: ");
-        puts("\v\t\tTo Exit to main menu press: \n\t\tctrl+D (linux) or ctrl+Z(windows)");
+        puts("\v\v\t\tTo Exit to main menu press: \n\t\tctrl+D (linux) or ctrl+Z(windows)");
         printf("%s","\t\t>");
         scanf("%29s", search_title);
         }
@@ -121,13 +131,13 @@ void viewBooks(void)
     }
     else
     {
-        puts("\v\t\tBook_id\t\tTitle\t\tAuthor\t\tCopies");
+        puts("\v\t\t\tBook_id\t\t\tTitle\t\t\tAuthor\t\t\tCopies");
         while (!feof(bookPtr))
         {
             int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
             if(result != 0 && book.id != 0)
             {
-                printf("\n\t\t%d\t\t%s\t\t%s\t\t%d\n", book.id, book.title, book.author, book.copies);
+                printf("\n\t\t\t%d\t\t\t%s\t\t\t%s\t\t\t%d\n", book.id, book.title, book.author, book.copies);
             }
         }
 
