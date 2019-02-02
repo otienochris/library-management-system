@@ -32,7 +32,11 @@ void menu(void)
         "\t\t***********************\n"
         "\t\t4 -> view books\n"
         "\t\t***********************\n"
-        "\t\t5 -> exit the program\n"
+        "\t\t5 -> issue book\n"
+        "\t\t***********************\n"
+        "\t\t6 -> view issued book\n"
+        "\t\t***********************\n"
+        "\t\t7 -> exit the program\n"
         "\t\t***********************\n"
         );
     // puts("\v\t\t******************************");
@@ -55,6 +59,12 @@ void menu(void)
         viewBooks();
         break;
     case 5:
+        issueBook();
+        break;
+    case 6:
+        viewIssuedBook();
+        break;
+    case 7:
         system("clear");
 
         puts("\v\v\v\v\t\t\tloading...");

@@ -17,7 +17,7 @@ void addStudent(void)
     {
         puts("Enter the id, first name and last name");
         printf("%s",">");
-        scanf("%29s%29s%29s", student.id, student.fname, student.lname);
+        scanf("%u%29s%29s", &student.id, student.fname, student.lname);
 
         while (!feof(stdin))
         {
@@ -37,7 +37,7 @@ void addStudent(void)
 
             puts("Enter the id, first name and last name");
             printf("%s",">");
-            scanf("%29s%29s%29s", student.id, student.fname, student.lname);
+            scanf("%u%29s%29s", &student.id, student.fname, student.lname);
         }
         fclose(studentPtr);
     }
