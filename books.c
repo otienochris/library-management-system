@@ -7,8 +7,7 @@ FILE *bookPtr, *studentPtr, *userPtr;
 BOOK book;
 STUDENT student;
 
-// a function that adds a book(s) to books.dat file
-    
+// a function that adds a book(s) to books.dat file    
 void addBook(void)
 {
     int book_id;
@@ -51,7 +50,7 @@ void addBook(void)
             
             if (choice == 1)
             {
-                addBook1();
+                addBook();
             }
             else
             {
@@ -68,8 +67,6 @@ void addBook(void)
 
 }
 
-
-
 // search for a book
 void searchBook(void)
 {
@@ -84,31 +81,69 @@ void searchBook(void)
     }
     else
     {
-
+        unsigned int search_id;
         char search_title[30];
-        puts("\n\t\tEnter the title of the book to search:");
-        printf("%s","\t\t>");
-        scanf("%29s", search_title);
+        int choice;
+        
+        printf("%s", "\v\t\t1 -> Search by title:\n "
+                "\t\t2 -> search by id:\v");
+        scanf("%d", &choice);
 
-        puts("\v\t\tBook_id\t\tTitle\t\tAuthor\t\tCopies");            
-        while (!feof(stdin))
-        {
-            
-        while (!feof(bookPtr))
-        {
-            int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
+        switch(choice){
+            case 1:
 
-            if ((strcmp(book.title, search_title)==0) && (result != 0) )
+                puts("\n\t\tEnter the title of the book to search:");
+                printf("%s","\t\t>");
+                scanf("%29s", search_title);
+
+                puts("\v\t\tBook_id\t\tTitle\t\tAuthor\t\tCopies");            
+                while (!feof(stdin))
                 {
-                printf("\v\t\t%d\t\t%s\t\t%s\t\t%d\n", book.id, book.title, book.author, book.copies);
+                    
+                while (!feof(bookPtr))
+                {
+                    int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
+
+                    if ((strcmp(book.title, search_title)==0) && (result != 0) )
+                        {
+                        printf("\v\t\t%d\t\t%s\t\t%s\t\t%d\n", book.id, book.title, book.author, book.copies);
+                        }
+
+                }
+                
+                // puts("\n\t\tSearch for another book: ");
+                puts("\v\v\t\tTo Exit to main menu press: \n\t\tctrl+D (linux) or ctrl+Z(windows)");
+                printf("%s","\t\t>");
+                scanf("%29s", search_title);
+                }
+                break;
+
+            case 2:
+                puts("\n\t\tEnter the id of the book to search:");
+                printf("%s","\t\t>");
+                scanf("%u", &search_id);
+
+                puts("\v\t\tBook_id\t\tTitle\t\tAuthor\t\tCopies");            
+                while (!feof(stdin))
+                {
+                    
+                while (!feof(bookPtr))
+                {
+                    int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
+
+                    if ( (result != 0) &&  book.id == search_id  )
+                        {
+                        printf("\v\t\t%d\t\t%s\t\t%s\t\t%d\n", book.id, book.title, book.author, book.copies);
+                        }
+
+                }
+                
+                // puts("\n\t\tSearch for another book: ");
+                puts("\v\v\v\v\v\v\v\t\tTo Exit to main menu press: \n\t\tctrl+D (linux) or ctrl+Z(windows)");
+                printf("%s","\t\t>");
+                scanf("%u", &search_id);
                 }
 
-        }
-        
-        // puts("\n\t\tSearch for another book: ");
-        puts("\v\v\t\tTo Exit to main menu press: \n\t\tctrl+D (linux) or ctrl+Z(windows)");
-        printf("%s","\t\t>");
-        scanf("%29s", search_title);
         }
 
 
@@ -155,29 +190,39 @@ void viewBooks(void)
     }
 }
 
-void validatedBookId(void)
+void issueBook(void)
 {
-    bookPtr = fopen("books.dat","ab+");
+    bookPtr = fopen("books.dat","rb+");
+    puts("\v\t\tISSUE BOOK:\v");
 
-    unsigned int book_id;
-    printf("%s", "\n\t\tEnter id: ");
-    scanf("%u", &book_id);
+    // users entry
+    int book_id;
+    printf("%s","Enter book id:\t");
+    scanf("%d", &book_id);
+    // temp = book_id;
 
-    while(!feof(bookPtr)){
-
-        fread(&book, sizeof(BOOK), 1, bookPtr);
-        unsigned int bookie = book.id;
-        
-        if (bookie == book_id)
-        {
-            system("clear");
-            puts("Error: The id exists");
-            menu();    
-        }
-        else
-        {
-            addBook();
-        }
+    if (bookPtr == NULL)
+    {
+        puts("Error: The file could not be oppened");
     }
-    fclose(bookPtr);
+    else
+    {
+        while (!feof(bookPtr))
+        {
+            if (book.id == book_id)
+            {
+                book_id = 0;
+            }        
+        }
+
+        while (book_id != 0)
+        {
+            
+        }
+
+
+
+
+
+    }
 }
