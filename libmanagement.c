@@ -23,12 +23,26 @@ void menu(void)
 
     int choice;
 
-    puts("\v\v\t\t1 -> Add student\n"
+    puts("\v\v\t\t***********************\n"
+        "\t\t1 -> Add student\n"
+        "\t\t***********************\n"
         "\t\t2 -> add Book\n"
+        "\t\t***********************\n"
         "\t\t3 -> search for a Book\n"
+        "\t\t***********************\n"
         "\t\t4 -> view books\n"
-        "\t\t5 -> exit the program");
-    printf("%s", "\v\t\t>");
+        "\t\t***********************\n"
+        "\t\t5 -> issue book\n"
+        "\t\t***********************\n"
+        "\t\t6 -> view issued book\n"
+        "\t\t***********************\n"
+        "\t\t7 -> view students\n"
+        "\t\t***********************\n"
+        "\t\t8 -> exit the program\n"
+        "\t\t***********************\n"
+        );
+    // puts("\v\t\t******************************");
+    printf("%s", "\v\t\t(Enter your choice here)->\t");
     scanf("%d", &choice);
 
     switch (choice)
@@ -47,16 +61,35 @@ void menu(void)
         viewBooks();
         break;
     case 5:
-        puts("\v\t\tThanks for spending time here.");
-        puts("\t\tjust a minute ... \n");
+        issueBook();
+        break;
+    case 6:
+        viewIssuedBook();
+        break; 
+    case 7:
+        viewStudents();
+        break;
+    case 8:
+        system("clear");
+
+        puts("\v\v\v\v\t\t\tloading...");
+        sleep(3);
+        system("clear");
+
+        puts("\v\v\v\v\t\t\t\tjust a second (saving changes)... \n");
         sleep(2);
+        system("clear");
+
+        puts("\v\v\v\v\t\t\t\t\t\tDone...BYE!\n");
+        sleep(2);
+        system("clear");
+        
         exit(1);
 
     default:
         puts("Invalid entry");
-
-        menu();
         break;
     }
+    menu();
 
 }
