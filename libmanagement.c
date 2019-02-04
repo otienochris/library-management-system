@@ -38,7 +38,9 @@ void menu(void)
         "\t\t***********************\n"
         "\t\t7 -> view students\n"
         "\t\t***********************\n"
-        "\t\t8 -> exit the program\n"
+        "\t\t8 -> update book\n"
+        "\t\t***********************\n"
+        "\t\t9 -> exit the program\n"
         "\t\t***********************\n"
         );
     // puts("\v\t\t******************************");
@@ -70,6 +72,9 @@ void menu(void)
         viewStudents();
         break;
     case 8:
+        updateBook();
+        break;
+    case 9:
         system("clear");
 
         puts("\v\v\v\v\t\t\tloading...");
