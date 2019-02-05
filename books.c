@@ -1,5 +1,25 @@
+// #include "structs.c"
+#include <stdio.h>
+#include <time.h>
 
-
+typedef struct
+{
+    unsigned int student_id, book_id;
+    char fname[30], title[30];    
+} ISSUEDBOOK;
+typedef struct
+{
+    unsigned int id, copies;
+    char title[30], author[30];
+} BOOK;
+typedef struct
+{
+    // COURSE course;
+    // DATE dob;
+    unsigned int day, id, month, year ;
+    char  fname[30], lname[30];
+    char faculty[30], department[30], course_title[30];
+} STUDENT;
 
 void menu(void);
 
@@ -7,7 +27,7 @@ void menu(void);
 FILE *bookPtr, *studentPtr, *userPtr, *issuedBookPtr;
 
 // global struct declaration
-BOOK book;
+// BOOK book;
 STUDENT student;
 ISSUEDBOOK issuedbook;
 
@@ -16,6 +36,8 @@ void addBook(void)
 {
     system("clear");
     unsigned int book_id;
+    BOOK book;
+
     bookPtr = fopen("books.dat", "a+");
 
     puts("\v\v\t\t\t\t\t\tAdd Book:");
@@ -88,6 +110,7 @@ void searchBook(void)
 {
     system("clear");
 
+
     puts("\t\tSEARCH BOOK:");
     bookPtr = fopen("books.dat", "rb");
 
@@ -124,8 +147,9 @@ void searchBook(void)
                     
                 while (!feof(bookPtr))
                 {
+                    BOOK book;
                     int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
-
+                    
                     if ((strcmp(book.title, search_title)==0) && (result != 0) )
                         {
                         printf("\v\t\t%d\t\t\t\t%s\t\t\t\t%s\t\t\t\t%d\n", book.id, book.title, book.author, book.copies);
@@ -151,8 +175,8 @@ void searchBook(void)
                     
                 while (!feof(bookPtr))
                 {
+                    BOOK book;
                     int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
-
                     if ( (result != 0) &&  book.id == search_id  )
                         {
                         printf("\v\t\t%d\t\t\t\t%s\t\t\t\t%s\t\t\t\t%d\n", book.id, book.title, book.author, book.copies);
@@ -191,7 +215,8 @@ void viewBooks(void)
     
         puts("\v\t\t\tBook_id\t\t\tTitle\t\t\tAuthor\t\t\tCopies");
         while (!feof(bookPtr))
-        {
+        {   
+            BOOK book;
             int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
             if(result != 0 && book.id != 0)
             {
@@ -217,15 +242,16 @@ void viewBooks(void)
 
 void issueBook(void)
 {
+    system("clear");
     int TRU = 0, FOLS = 1;
-    int x = FOLS, y = FOLS, stop = FOLS; // variable to control the flow of execution of command
+    int x = FOLS, y = FOLS; //stop = FOLS; // variable to control the flow of execution of command
     unsigned int student_id, book_id;
     // char title[30], fname[30];
 
     bookPtr = fopen("books.dat","rb+");
     studentPtr = fopen("student.dat", "rb+");
     issuedBookPtr = fopen("issuedBook.dat", "a+");
-    puts("\v\t\tISSUE BOOK:\v");
+    puts("\v\t\tISSUE BOOK:\v\v\v\v");
 
     // checks if the file is opened or not
     if (bookPtr == NULL || studentPtr == NULL || issuedBookPtr == NULL)
@@ -237,8 +263,10 @@ void issueBook(void)
     {
         // checks if the book exists
                 // x = FOLS;
-        printf("%s","\t\t\tEnter student id\n\t\t>\t");
+        printf("%s","\t\tEnter student id\n\t\t>\t");
         scanf("%d", &student_id);
+        
+
 
         // executes when the book exists
         while (!feof(studentPtr))
@@ -247,82 +275,97 @@ void issueBook(void)
             if(result2 != 0 && student.id == student_id)
                 {
                     // char fname[30] = student.fname;
-                    puts("\v\t\tproceed, the student id exist");
-                    y = TRU;
+                    puts("\v\v\t\tproceed, the student id exist\v\v");
+                    y = TRU; // to enable the book to be checked
                 }
             
         }
 
         while (y == TRU)
         {   
-            y = FOLS;
-            printf("%s", "\t\t\tEnter book id");
-            printf("%s", "\t\t\t(Enter the id here)->\t");                
+            y = FOLS; // to stop the loop
+            printf("%s", "\v\v\t\tEnter id of the book to issue");
+            printf("%s", "\n\t\t(Enter the id here)->\t");                
             scanf("%u", &book_id);
+
+
+
+            int count = 0; // to keep track of the record currently read
+            // char stop = 'n'; // to halt the loop when the record is found
+
+            
+
             while (!feof(bookPtr))
             {
 
-                int result = fread(&book, sizeof(BOOK),1 , bookPtr);
-                // result is used to confirm if the file is empty(result==0) or not 
-                if (result != 0 && book.id == book_id)
-                {   
-                    // char title[30] = book.title;
-                    // puts("\v\t\tProceed, the book exists\v");
-                    x = TRU;
+                BOOK book;
+                int  result = fread(&book, sizeof(BOOK), 1, bookPtr); // checks if the record is empty
+                count += result; // keeps track of the record number currently read
 
-                    if (book.copies>0)
+                if ( (result != 0) &&  book.id == book_id )
                     {
-                        // unsigned int temp = book.copies;
+                    // set cursor at the begining of the record 
+                    fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
+                    printf("\v\v\t\t\tOld record -> \t%-6d%-16s%-11s%u\n\n", book.id, book.title, 
+                            book.author, book.copies);
+
+                    if (book.copies > 0) {
+                        
+                        x = TRU; // this indicates that the book is available
+                        // stop = 'y';
+                        // decrement copies by one                            
                         --book.copies;
-                        // fseek()
-                        fwrite(&book, sizeof(BOOK), 1, bookPtr);
-                    }
-                    else
-                    {
-                        puts("The book is out of stock");
-                        stop = TRU;
-                    }
-                    /* if (temp = (book.copies + 1))
-                    {
-                        book.id = 0;
 
-                    } */
+                        // set cursor at the begining of the record 
+                        fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
+
+                        // change the records
+                        fwrite(&book, sizeof(BOOK), 1, bookPtr);
+                        printf("\v\v\t\t\tNew record -> \t%-6d%-16s%-11s%u\n\n", book.id, book.title, 
+                            book.author, book.copies);
+
+                        puts("\v\v\v\v\t\tRecord is successfully update ");
+                    }
+                    // stop = 'y'; // terminate the loop
+                    sleep(2);
                 }
+
             }
 
         }
 
         // executes when the student exists
-        while (x == TRU && stop != TRU)
+        while (x == TRU && y == FOLS )
         {
-            puts("\v\t\t\tstoring the dat..\v\t\t\t");
+            puts("\v\v\t\t\tstoring the data..\v");
             sleep(1);
             issuedbook.student_id = student_id;
-            // issuedbook.fname = fname;
+            // issuedbook.fname = student.fname;
             issuedbook.book_id = book_id;
-            // issuedbook.title = title; 
+            // issuedbook.title = book.title; 
             fwrite(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
 
             x = FOLS; // just to demonstrate that x changed
             
-
-            
         }
 
-        if (y == FOLS )
-        {
-            puts("\v\t\t\tError: One of the details isnt valid (likely the student id is)");
-        }        
+        while(x==FOLS){
+            puts("\v\v\v\v\t\t\t\tOops! The book is out of stock");
+            x = TRU; // terminate this loop
+        }
         
 
-            int choice;
-            printf("%s", "\n\t\tEnter 1 to continue or 0 to exit: \n");
-            printf("%s", "\v\t\t(Enter your choice here)->\t");
-            scanf("%d", &choice);
-            if (choice == 1)
-            {
-                issueBook();
-            }
+            
+
+
+        int choice;
+        printf("%s", "\v\v\v\v\v\v\v\v\v\v\n\t\tEnter 1 to continue or 0 to exit: \n");
+        printf("%s", "\v\t\t(Enter your choice here)->\t");
+        scanf("%d", &choice);
+        if (choice == 1)
+        {
+            issueBook();
+        }
 
         fclose(bookPtr);
         fclose(studentPtr);
@@ -378,40 +421,98 @@ void updateBook(void)
     bookPtr = fopen("books.dat", "rb+");
 
 
-    printf("%s", "Enter an id of the book to be update ->");
+    int count = 0; // to keep track of the record currently read
+    char stop = 'n'; // to halt the loop when the record is found
+
+    // entry of id used for verification
+    printf("%s", "\v\v\t\tEnter an id of the book to update ->");
     unsigned int book_id;
     scanf("%u", &book_id);
 
+
+    while (!feof(bookPtr) && stop == 'n')
+    {
+
+        BOOK book;
+        int  result = fread(&book, sizeof(BOOK), 1, bookPtr); // checks if the record is empty
+        count += result; // keeps track of the record number currently read
+
+        if ( (result != 0) &&  book.id == book_id  )
+            {
+            // set cursor at the begining of the record 
+            fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
+            printf("\v\v\t\t\tOld record -> \t%-6d%-16s%-11s%u\n\n", book.id, book.title, 
+                    book.author, book.copies);
+            printf("%s", "\v\v\t\tEnter the new title, author and copies");
+            scanf("%29s%29s",book.title, book.author);
+
+            unsigned int copies;
+            scanf("%u", &copies);
+            book.copies = copies;
+
+            // set cursor at the begining of the record 
+            fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
+            fwrite(&book, sizeof(BOOK), 1, bookPtr);
+            puts("\v\v\v\v\t\tRecord is successfully update ");
+            printf("\v\t\t\tNew record -> %-6d%-16s%-11s%u\n", book.id, book.title, book.author, book.copies);
+
+            stop = 'y'; // terminate the loop
+            sleep(2);
+            }
+
+    }
+
+    // variable stop does not change if the book does not exist
+    while(stop == 'n'){
+        puts("\v\v\t\t\tError: The book id does not exist");
+        stop = 'y'; // terminate the loop
+        sleep(2);
+    }
+    
+    rewind(bookPtr); // returns the cursor to the begining of the file 
+    fclose(bookPtr);
+    menu();
+
+}
+
+
+void deleteBook(void)
+{
+    system("clear");
+    bookPtr = fopen("books.dat", "rb+");
+
+
+    printf("%s", "Enter an id of the book to be deleted ->");
+    unsigned int book_id;
+    scanf("%u", &book_id);
+
+
+    // set to position of the file to read
     fseek(bookPtr, (book_id - 1) * sizeof(BOOK), SEEK_SET);
 
-    fread(&book, sizeof(BOOK), 1, bookPtr);
+    BOOK book1;
 
-    if (book.id == 0)
+
+    // read the single record
+    fread(&book1, sizeof(BOOK), 1, bookPtr);
+
+    if (book1.id == 0)
     {
-        printf("The book id #%u has no information.\n", book.id);
+        printf("The book id #%u has no information.\n", book1.id);
     }
     else
     {
-        printf("%-6d%-16s%-11s%u\n\n", book.id, book.title, 
-                book.author, book.copies);
-
-        // book.id = book_id;
-        printf("%s", "Enter the new title, author and copies");
-        scanf("%29s%29s",book.title, book.author);
-        
-        // couldnt update directly
-        unsigned int copies;
-        scanf("%u", &copies);
-        book.copies = copies;
-
-
-        printf("%-6d%-16s%-11s%u\n\n", book.id, book.title, book.author, book.copies);
-        
+        // books with id of zero are not viewable
+        BOOK blankbook = {0, 0, "", ""};
+      
         fseek(bookPtr, (book_id - 1) * sizeof(BOOK), SEEK_SET);
 
-        // write updated record 
-        fwrite(&book, sizeof(BOOK), 1, bookPtr);
+        // overwrite the record with an empty record 
+        fwrite(&blankbook, sizeof(BOOK), 1, bookPtr);
+        sleep(2);
     }
     fclose(bookPtr);
+    puts("\v\v\v\v\v\v\v\t\t\t\t\tComing soon....Under construction");
+    sleep(2);
     menu();
 }
