@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <unistd.h> // clear-screen
 #include <string.h>
-#include "structs.c" // contains all the structs used 
+// #include "structs.c" // contains all the structs used 
 #include "books.c"  // contain functions that involves the books
 #include "students.c"  // contains all functions that involve the book
 
@@ -38,9 +39,19 @@ void menu(void)
         "\t\t***********************\n"
         "\t\t7 -> view students\n"
         "\t\t***********************\n"
-        "\t\t8 -> exit the program\n"
+        "\t\t8 -> update book\n"
+        "\t\t***********************\n"
+        "\t\t9 -> delete book\n"
+        "\t\t***********************\n"
+        "\t\t10 -> exit the program\n"
         "\t\t***********************\n"
         );
+
+        time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    printf("\v\t\tnow: %d-%d-%d %d:%d:%d\n", 
+        tm.tm_year + 1900, tm.tm_mon, tm.tm_mday, 
+        tm.tm_hour, tm.tm_min, tm.tm_sec);
     // puts("\v\t\t******************************");
     printf("%s", "\v\t\t(Enter your choice here)->\t");
     scanf("%d", &choice);
@@ -70,6 +81,12 @@ void menu(void)
         viewStudents();
         break;
     case 8:
+        updateBook();
+        break;
+    case 9:
+        deleteBook();
+        break;
+    case 10:
         system("clear");
 
         puts("\v\v\v\v\t\t\tloading...");
