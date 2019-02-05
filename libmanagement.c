@@ -43,7 +43,9 @@ void menu(void)
         "\t\t***********************\n"
         "\t\t9 -> delete book\n"
         "\t\t***********************\n"
-        "\t\t10 -> exit the program\n"
+         "\t\t10 -> return book\n"
+        "\t\t***********************\n"
+        "\t\t11 -> exit the program\n"
         "\t\t***********************\n"
         );
 
@@ -87,6 +89,9 @@ void menu(void)
         deleteBook();
         break;
     case 10:
+        returnBook();
+        break;
+    case 11:
         system("clear");
 
         puts("\v\v\v\v\t\t\tloading...");

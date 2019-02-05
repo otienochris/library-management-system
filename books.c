@@ -202,6 +202,7 @@ void searchBook(void)
 void viewBooks(void)
 {
     system("clear"); // works only on ubuntu
+    // system("COLOR FC");
 
     puts("\v\t\t\t\t\t\t\t\t\tLIST OF BOOKS:");
     bookPtr = fopen("books.dat", "rb");
@@ -348,11 +349,11 @@ void issueBook(void)
             x = FOLS; // just to demonstrate that x changed
             
         }
-
-        while(x==FOLS){
-            puts("\v\v\v\v\t\t\t\tOops! The book is out of stock");
-            x = TRU; // terminate this loop
-        }
+    /* 
+            while(x==FOLS){
+                puts("\v\v\v\v\t\t\t\tOops! The book is out of stock");
+                x = TRU; // terminate this loop
+            } */
         
 
             
@@ -478,41 +479,127 @@ void updateBook(void)
 
 void deleteBook(void)
 {
-    system("clear");
     bookPtr = fopen("books.dat", "rb+");
 
 
-    printf("%s", "Enter an id of the book to be deleted ->");
+    int count = 0; // to keep track of the record currently read
+    char stop = 'n'; // to halt the loop when the record is found
+
+    // entry of id used for verification
+    printf("%s", "\v\v\t\tEnter an id of the book to update ->");
     unsigned int book_id;
     scanf("%u", &book_id);
 
 
-    // set to position of the file to read
-    fseek(bookPtr, (book_id - 1) * sizeof(BOOK), SEEK_SET);
-
-    BOOK book1;
-
-
-    // read the single record
-    fread(&book1, sizeof(BOOK), 1, bookPtr);
-
-    if (book1.id == 0)
+    while (!feof(bookPtr) && stop == 'n')
     {
-        printf("The book id #%u has no information.\n", book1.id);
+
+        BOOK book;
+        int  result = fread(&book, sizeof(BOOK), 1, bookPtr); // checks if the record is empty
+        count += result; // keeps track of the record number currently read
+
+        if ( (result != 0) &&  book.id == book_id  )
+            {
+            // set cursor at the begining of the record 
+            fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
+            printf("\v\v\t\t\tOld record -> \t%-6d%-16s%-11s%u\n\n", book.id, book.title, 
+                    book.author, book.copies);
+           
+            BOOK blankbook = {0, 0 ,"", ""};
+
+
+            // set cursor at the begining of the record 
+            fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
+            fwrite(&blankbook, sizeof(BOOK), 1, bookPtr);
+            puts("\v\v\v\v\t\tRecord is successfully deleted ");
+            puts("press enter to continue");
+            getchar();
+
+            stop = 'y'; // terminate the loop
+            sleep(2);
+            }
+
+    }
+
+    // variable stop does not change if the book does not exist
+    while(stop == 'n'){
+        puts("\v\v\t\t\tError: The book id does not exist");
+        stop = 'y'; // terminate the loop
+        sleep(2);
+    }
+    
+    rewind(bookPtr); // returns the cursor to the begining of the file 
+    fclose(bookPtr);
+    menu();
+}
+
+void returnBook(void)
+{
+    system("clear");
+
+    puts("\v\t\tRETURN BOOK:\v\v\v\v");
+    
+    issuedBookPtr = fopen("issuedBook.dat", "rb+");
+    bookPtr = fopen("books.dat","rb+");
+
+    if (bookPtr == NULL || issuedBookPtr == NULL ) 
+    {
+        puts("Error: The required files could not be opened");
     }
     else
     {
-        // books with id of zero are not viewable
-        BOOK blankbook = {0, 0, "", ""};
-      
-        fseek(bookPtr, (book_id - 1) * sizeof(BOOK), SEEK_SET);
+        unsigned int book_id;
+        printf("%s", "Enter book id");
+        scanf("%u", &book_id);
 
-        // overwrite the record with an empty record 
-        fwrite(&blankbook, sizeof(BOOK), 1, bookPtr);
+        unsigned int student_id;
+        printf("%s", "Enter student id");
+        scanf("%u", &student_id);
+
+        int count = 0;
+        
+        while(!feof(issuedBookPtr))
+        {
+
+            ISSUEDBOOK issuedbook;
+            int result = fread(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
+            count += result;
+
+            if (result != 0 && book_id == issuedbook.book_id && student_id == issuedbook.student_id ) 
+            {
+                fseek(issuedBookPtr, (count - 1)*sizeof(ISSUEDBOOK), SEEK_SET );
+                ISSUEDBOOK blankbook = { 0, 0, "", "" };
+                fseek(issuedBookPtr, (count - 1)*sizeof(ISSUEDBOOK), SEEK_SET );
+                fwrite(&blankbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
+                puts("was here 1");
+            }
+        }
+        rewind(issuedBookPtr);
+        fclose(issuedBookPtr);
+
+
+        count = 0;
+        while(!feof(bookPtr))
+        {
+            BOOK book;
+            int result1 = fread(&book, sizeof(BOOK), 1, bookPtr);
+            count += result1;
+
+            if (result1 != 0 && book_id == book.id) 
+            {
+                fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
+                ++book.copies;
+                fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
+                fwrite(&book, sizeof(BOOK), 1, bookPtr);
+                puts("was here 2");
+            }
+            
+        }
+        rewind(bookPtr);
+        fclose(bookPtr);
+        puts("The records are successfully updated");
+        
         sleep(2);
+        menu();
     }
-    fclose(bookPtr);
-    puts("\v\v\v\v\v\v\v\t\t\t\t\tComing soon....Under construction");
-    sleep(2);
-    menu();
 }
