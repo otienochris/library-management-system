@@ -137,18 +137,20 @@ void viewStudents(void)
     }
     else
         {
-            puts("id\t\t\tfirstName\t\t   lastName     D.O.B\t\t\t\tfaculty\t\t\tdepart't\t\t\tcourse");
-            puts("______________________________________________________________________________________________________________________________________________________________________\v");
+            puts("\t   id\t\t\tfirstName\t\t      lastName   D.O.B\t\t\t\tfaculty   \t\t    depart't\t\t\tcourse");
+            puts("\t_________________________________________________________________________________________________________________________________________________________________\v");
             while (!feof(studentPtr))
             {
                 int result = fread(&student2, sizeof(STUDENT2), 1, studentPtr);
                 if (result != 0 && student2.id != 0)
                 {
-                    printf("%u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
+                    printf("\t  %u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
                     student2.id, student2.fname, student2.lname,
                     student2.day,student2.month,student2.year,
                     student2.faculty,student2.department,student2.course_title
-                    );    
+                    );  
+                    puts("\t````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````\n");
+
                 }
                 
             }

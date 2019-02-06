@@ -23,44 +23,36 @@ void menu(void)
     system("clear");    // works only for linux sys
 
     int choice;
+    puts("\v\v\v\t\t\t\t\t\t\t\t\t```````````````````````````````````````` ");
+    puts("\t\t\t\t\t\t\t\t\t\t\033[22;34mLIBRARY MANAGEMENT SYSTEM\033[0m");
+    puts("\t\t\t\t\t\t\t\t\t```````````````````````````````````````` \v\v\v\v\v\v");
 
-    puts("\v\v\t\t***********************************************************************************************\n"
-        "\t\t\t\t|1| Add student       \t\t|8|  update book\n"
-        "\t\t***********************************************************************************************\n"
-        "\t\t\t\t|2| add Book          \t\t|9|  delete book\n"
-        "\t\t***********************************************************************************************\n"
-        "\t\t\t\t|3| search for a Book \t\t|10| return book\n"
-        "\t\t***********************************************************************************************\n"
-        "\t\t\t\t|4| view books        \t\t|11| delete student\n"
-        "\t\t***********************************************************************************************\n"
-        "\t\t\t\t|5| issue book        \t\t|12| update student\n"
-        "\t\t***********************************************************************************************\n"
-        "\t\t\t\t|6| view issued book  \t\t|13| exit the program\n"
-        "\t\t***********************************************************************************************\n"
-        "\t\t\t\t|7| view students\n   "
-        "\t\t***********************************************************************************************\n"
-        /* "\t\t8 -> update book\n"
-        "\t\t***********************\n"
-        "\t\t9 -> delete book\n"
-        "\t\t***********************\n"
-         "\t\t10 -> return book\n"
-        "\t\t***********************\n"
-        "\t\t11 -> delete student\n"
-        "\t\t***********************\n"
-         "\t\t12 -> update student\n"
-        "\t\t***********************\n"
-        "\t\t13 -> exit the program\n"
-        "\t\t***********************\n" */
+    puts("\v\v\t\t\t\t\t\t***********************************************************************************************\n"
+        "\t\t\t\t\t\t\t\t|1| Add student       \t\t|8|  update book\n"
+        "\t\t\t\t\t\t```````````````````````````````````````````````````````````````````````````````````````````````\n"
+        "\t\t\t\t\t\t\t\t|2| add Book          \t\t|9|  delete book\n"
+        "\t\t\t\t\t\t```````````````````````````````````````````````````````````````````````````````````````````````\n"
+        "\t\t\t\t\t\t\t\t|3| search for a Book \t\t|10| return book\n"
+        "\t\t\t\t\t\t```````````````````````````````````````````````````````````````````````````````````````````````\n"        
+        "\t\t\t\t\t\t\t\t|4| view books        \t\t|11| delete student\n"
+        "\t\t\t\t\t\t```````````````````````````````````````````````````````````````````````````````````````````````\n"
+        "\t\t\t\t\t\t\t\t|5| issue book        \t\t|12| update student\n"
+        "\t\t\t\t\t\t```````````````````````````````````````````````````````````````````````````````````````````````\n"        
+        "\t\t\t\t\t\t\t\t|6| view issued book  \t\t|13| exit the program\n"
+        "\t\t\t\t\t\t```````````````````````````````````````````````````````````````````````````````````````````````\n"        
+        "\t\t\t\t\t\t\t\t|7| view students\n   "
+        "\t\t\t\t\t\t***********************************************************************************************\n"
         );
 
         time_t t = time(NULL);
     struct tm tm = *localtime(&t);
-    printf("\v\t\tnow: %d-%d-%d %d:%d:%d\n", 
-        tm.tm_year + 1900, tm.tm_mon, tm.tm_mday, 
-        tm.tm_hour, tm.tm_min, tm.tm_sec);
+    printf("\v\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tTime is: %d:%d:%d\ton: %d-%d-%d \n", 
+        tm.tm_hour, tm.tm_min, tm.tm_sec,
+        tm.tm_mday, tm.tm_mon,tm.tm_year + 1900); 
     // puts("\v\t\t******************************");
-    printf("%s", "\v\t\t(Enter your choice here)->\t");
+    printf("%s", "\v\t\t\t\t\t\t\t\t\t(Enter your choice here)->\t");
     scanf("%d", &choice);
+
 
     switch (choice)
     {
@@ -102,10 +94,10 @@ void menu(void)
         updateStudent();
         break;
     case 13:
-        system("clear");
+        /* system("clear");
 
         puts("\v\v\v\v\t\t\tloading...");
-        sleep(3);
+        sleep(3); */
         system("clear");
 
         puts("\v\v\v\v\t\t\t\tjust a second (saving changes)... \n");
@@ -113,7 +105,7 @@ void menu(void)
         system("clear");
 
         puts("\v\v\v\v\t\t\t\t\t\tDone...BYE!\n");
-        sleep(2);
+        sleep(1);
         system("clear");
         
         exit(1);
