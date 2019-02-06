@@ -52,7 +52,7 @@ void addStudent(void)
             fread(&student2, sizeof(STUDENT2), 1, studentPtr);
             if (student2_id == student2.id)
             {
-                puts("\v\t\tError: The student2 id exists");
+                puts("\v\t\tError: The student id exists");
                 sleep(2);
                 student2_id = 0 ;
             }
@@ -170,3 +170,172 @@ void viewStudents(void)
             }
 }
 
+void deleteStudent(void)
+{
+    system("clear");
+    studentPtr = fopen("student.dat", "rb+");
+    issuedBookPtr = fopen("issuedBook.dat", "rb+");
+
+    if (studentPtr == NULL || issuedBookPtr == NULL ) {
+        puts("\v\v\v\t\t\tError: Could not access the required files ");
+    }
+    else
+    {
+        
+    
+    
+    int count = 0; // to keep track of the record currently read
+    char stop = 'n'; // to halt the loop when the record is found
+
+    // entry of id used for verification
+    printf("%s", "\v\v\t\tEnter an id of the book to update ->");
+    unsigned int student_id;
+    scanf("%u", &student_id);
+
+
+    while (!feof(studentPtr) && stop == 'n')
+    {
+
+        STUDENT2 student2;
+        int  del = 0, result = fread(&student2, sizeof(STUDENT2), 1, studentPtr); // checks if the record is empty
+        count += result; // keeps track of the record number currently read
+
+        if ( (result != 0) &&  student2.id == student_id  )
+        {
+            stop = 'y'; // the id exists
+
+            // to ensure that a student2 having a book can not be deleted
+            while(!feof(issuedBookPtr))
+            {
+                ISSUEDBOOK issuedbook;
+
+                int result = fread(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
+                    if (result != 0 && student_id == issuedbook.student_id) {
+                        puts("\v\v\v\v\t\t\tError: The student record can not be deleted while having books");
+                        del = 1; // ensure no deletion of this record
+                        sleep(3);
+                    }
+            }
+            
+            // if student2 having no book the delete
+            while(del == 0 )
+            {
+                
+                del = 1; // to terminate the loop
+
+                // set cursor at the begining of the record 
+                fseek(studentPtr, (count - 1)*sizeof(STUDENT2), SEEK_SET);
+              
+              printf("%u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
+                    student2.id, student2.fname, student2.lname,
+                    student2.day,student2.month,student2.year,
+                    student2.faculty,student2.department,student2.course_title
+                    ); 
+            
+                STUDENT2 blankstudent = {0, 0, 0 , 0, "", "" ,"", "", ""};
+
+
+                // set cursor at the begining of the record 
+                fseek(studentPtr, (count - 1)*sizeof(STUDENT2), SEEK_SET);
+                fwrite(&blankstudent, sizeof(STUDENT2), 1, studentPtr);
+                puts("\v\v\v\v\t\tRecord is successfully deleted ");
+                
+
+                sleep(3);
+            }
+        }
+
+    }
+
+    // variable stop does not change if the book does not exist
+    while(stop == 'n'){
+        puts("\v\v\t\t\tError: The book id does not exist");
+        stop = 'y'; // terminate the loop
+        sleep(2);
+    }
+    
+    rewind(studentPtr); // returns the cursor to the begining of the file 
+    fclose(studentPtr);
+    }
+    menu();
+}
+
+void updateStudent(void)
+{
+    system("clear");
+
+    studentPtr = fopen("student.dat", "rb+");
+
+    if (studentPtr == NULL) {
+        puts("Error: opening the files");
+        sleep(2);
+    }
+    else
+    {   
+        int count = 0; // to keep track of the record currently read
+        char stop = 'n'; // to halt the loop when the record is found
+
+        // entry of id used for verification
+        printf("%s", "\v\v\t\tEnter an id of the student to update ->");
+        unsigned int student_id;
+        scanf("%u", &student_id);
+
+
+        while (!feof(studentPtr) && stop == 'n')
+        {
+
+            STUDENT2 student2;
+            int  result = fread(&student2, sizeof(STUDENT2), 1, studentPtr); // checks if the record is empty
+            count += result; // keeps track of the record number currently read
+
+            if ( (result != 0) &&  student2.id == student_id  )
+                {
+                    // set cursor at the begining of the record 
+                    fseek(studentPtr, (count - 1)*sizeof(STUDENT2), SEEK_SET);
+                    
+                    printf("%s", "\v\v\t\tEnter the first name and last name");
+                    printf("%s","\t\t>");
+                    scanf("%29s%29s",student2.fname, student2.lname);
+                    
+                    
+                    // enter date of birth
+                    puts("\v\t\tEnter your date of birth: day month year");
+                    printf("%s","\t\t>");
+                    // scanf("%d%d%d", &student2.dob.day, &student2.dob.month, &student2.dob.year);
+                    scanf("%d%d%d", &student2.day, &student2.month, &student2.year);
+
+                    // entry of course information
+                    puts("\v\t\tEnter your faculty, department and course title");
+                    printf("%s","\t\t>");
+                    // scanf("%29s%29s%29s", student2.course.faculty, student2.course.department, student2.course.course_title);
+                    scanf("%29s%29s%29s", student2.faculty, student2.department, student2.course_title);
+
+                    // set cursor at the begining of the record 
+                    fseek(studentPtr, (count - 1)*sizeof(STUDENT2), SEEK_SET);
+                    fwrite(&student2, sizeof(STUDENT2), 1, studentPtr);
+                    puts("\v\v\v\v\t\tRecord is successfully update ");
+                    puts("\v\v\v\t\t\tNew record");
+                    printf("%u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
+                            student2.id, student2.fname, student2.lname,
+                            student2.day,student2.month,student2.year,
+                            student2.faculty,student2.department,student2.course_title
+                            );
+
+                    stop = 'y'; // terminate the loop
+                    sleep(2);
+                }
+
+            }
+
+        // variable stop does not change if the book does not exist
+        while(stop == 'n'){
+            puts("\v\v\t\t\tError: The book id does not exist");
+            stop = 'y'; // terminate the loop
+            sleep(2);
+        }
+        
+        rewind(studentPtr); // returns the cursor to the begining of the file 
+        fclose(studentPtr);
+    }
+    menu();
+}
