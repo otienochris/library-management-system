@@ -94,16 +94,12 @@ void addBook(void)
                 printf("%s", "\v\v\t\tNB:\tPlease restart the program to view changes in the files...\n");
                 puts("\t\t---------------------------------------------------------------------------------------");
                 sleep(3);
-                menu();
+            
             }
                 
 
 
         }
-
-
-        menu ();
-    
 
 }
 
@@ -169,7 +165,7 @@ void searchBook(void)
 
                 if (choice == 0)
                 {
-                    menu();
+                    // go to the customized view
                 }
                 
                 break;
@@ -206,14 +202,15 @@ void searchBook(void)
 
                 if (choice2 == 0)
                 {
-                    menu();
+                    // go to the customized view                    
                 }
 
         }
 
 
         fclose(bookPtr);
-        menu();
+        // go to the customized view
+
         }
 }
 
@@ -263,7 +260,7 @@ void viewBooks(void)
 
     if (choice == 0)
     {
-        menu();
+        // go to the customized view
     }
 }
 
@@ -408,7 +405,7 @@ void issueBook(void)
         fclose(studentPtr);
         fclose(issuedBookPtr);
     
-        menu();
+        // menu(); // got to the customized view of the librarian
 
     }
 }
@@ -457,7 +454,7 @@ void viewIssuedBook(void)
 
         if (choice == 0)
         {
-            menu();
+            // goes to the customized librabrian view
         }
     }
 }
@@ -540,7 +537,7 @@ void updateBook(void)
 
     if (choice == 0)
     {
-        menu();
+        // this goes to the customized view of the librabrian
     }
     else
     {
@@ -655,7 +652,8 @@ void deleteBook(void)
 
     if (choice == 0)
     {
-        menu();
+        // this goes to the customized view of the librabrian
+        // menu();
     }
     else
     {
@@ -746,7 +744,8 @@ void returnBook(void)
         }
 
         sleep(3);
-        menu();
+        // this goes to the customized view of the librabrian
+        // menu();
     }
 }
 

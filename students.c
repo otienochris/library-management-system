@@ -18,6 +18,7 @@ typedef struct
 
 
 void menu(void);
+int main();
 
 BOOK2 book2;
 STUDENT2 student2;
@@ -27,55 +28,67 @@ void addStudent(void)
 {
     system("clear");  // works only for linux sys
 
-    puts("\v\t\t\t\t\t\tADD STUDENT2");
-    puts("\t\t\t\t\t____________________________\v\v");
+    puts("\v\t\t\t\t\t\t\t\t````````````````````````````````");
+    puts("\t\t\t\t\t\t\t\t\t   \033[22;34mADD STUDENT\033[0m\n");
+    puts("\t\t\t\t\t\t\t\t````````````````````````````````\v\v");
 
-    puts("\t\tmultiple names must be separated using a hyphen(eg c-programming otieno-chris 900)");
+    puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________\n");
+    puts("\t\t\t\t\t  *Multiple names must be separated using a hyphen(eg c-programming otieno-chris )\n");
+    puts("\t\t\t\t\t  *In every step, insert the requred records in the same line, values seperated by a\n\t\t\t\t\t   space then press Enter.");
+    puts("\t\t\t\t\t________________________________________________________________________________________");
 
 
     studentPtr = fopen("student.dat", "a+");
 
     if (studentPtr == NULL)
     {
-        puts("Error opening students.dat");
+        puts("\v\v\v\t\t\tError opening students.dat");
         exit(1);
     }
     else
     {
         unsigned int student2_id;
-        puts("\v\t\tEnter student id");
-        printf("%s","\t\t>");
+        printf("\v\v\t\t\t\t\tEnter student id\t\t\t\t\t->\t");
+        // printf("%s","\t\t>");
         scanf("%u", &student2_id);
+        char info = 'n'; // give info if process success
             
         while (!feof(studentPtr))
         {
             fread(&student2, sizeof(STUDENT2), 1, studentPtr);
             if (student2_id == student2.id)
             {
-                puts("\v\t\tError: The student id exists");
-                sleep(2);
+                puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________\n");
+                puts("\t\t\t\t\t  Error: The student id exists");
+                puts("\t\t\t\t\t________________________________________________________________________________________\n");
+
                 student2_id = 0 ;
             }
         }
 
         while (student2_id != 0)
         {
-            puts("\t\tEnter the first name and last name");
-            printf("%s","\t\t>");
+            info = 'y';
+
+            printf("\v\v\t\t\t\t\tEnter the first name and last name\t\t\t->\t");
             scanf("%29s%29s",student2.fname, student2.lname);
+            // puts("\t\tEnter the first name and last name");
+            // printf("%s","\t\t>");
             
             
             // enter date of birth
-            puts("\v\t\tEnter your date of birth: day month year");
-            printf("%s","\t\t>");
-            // scanf("%d%d%d", &student2.dob.day, &student2.dob.month, &student2.dob.year);
+            printf("\v\v\t\t\t\t\tEnter your date of birth: day month year (12 12 2019)\t->\t");
             scanf("%d%d%d", &student2.day, &student2.month, &student2.year);
+            // puts("\v\t\tEnter your date of birth: day month year");
+            // printf("%s","\t\t>");
+            // scanf("%d%d%d", &student2.dob.day, &student2.dob.month, &student2.dob.year);
 
             // entry of course information
-            puts("\v\t\tEnter your faculty, department and course title");
-            printf("%s","\t\t>");
-            // scanf("%29s%29s%29s", student2.course.faculty, student2.course.department, student2.course.course_title);
+            printf("\v\v\t\t\t\t\tEnter your faculty, department and course title\t\t->\t");
             scanf("%29s%29s%29s", student2.faculty, student2.department, student2.course_title);
+            // puts("\v\t\tEnter your faculty, department and course title");
+            // printf("%s","\t\t>");
+            // scanf("%29s%29s%29s", student2.course.faculty, student2.course.department, student2.course.course_title);
 
             while (!feof(studentPtr))
                 {
@@ -83,7 +96,6 @@ void addStudent(void)
                     if (student2_id == student2.id)
                     {
                         puts("\v\t\tError: The student2 id exists");
-                        sleep(2);
                         student2_id = 0 ;
                     }
                 }
@@ -96,27 +108,33 @@ void addStudent(void)
             }
 
         }
-            printf("%s", "\v\t\trestart the program to view changes in the files...\n");
-            sleep(2);
+        if (info == 'y') 
+        {
+            puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________\n");
+            printf("%s", "\t\t\t\t\t *The record is successfully saved.\n\n");
+            printf("%s", "\t\t\t\t\t *Restart the program to view changes in the files...\n");
+            puts("\t\t\t\t\t________________________________________________________________________________________\n");
+        } 
             
             puts("\v");
             
             int choice;
-            printf("\v\v\v\v\v\v\v\t\t\tEnter 0 to go back to the main menu (press 1 continue)");
-            printf("%s", "\t\t(Entery goes here)->\t");
+            puts("\v\v\v\v\v\v\v\t\t\t\t\t#######################################################################################");
+            printf("\t\t\t\t\t\t  Enter 0 to go back to the main menu (press 1 continue)\t->\t");
+            // printf("%s", "\t\t(Entery goes here)->\t");
 
             scanf("%d", &choice);
 
             if (choice == 0)
             {
-                menu();
+                // this goes to the customized view of the librabrian
+                // main();
             }
             else
             {
                 addStudent();
             }
         fclose(studentPtr);
-        menu();
     }
 
 }
@@ -168,7 +186,8 @@ void viewStudents(void)
 
             if (choice == 0)
             {
-                menu();
+                // this goes to the customized view of the librabrian
+                // menu();
             }
 }
 
@@ -259,7 +278,8 @@ void deleteStudent(void)
     rewind(studentPtr); // returns the cursor to the begining of the file 
     fclose(studentPtr);
     }
-    menu();
+    // this goes to the customized view of the librabrian
+    // menu();
 }
 
 void updateStudent(void)
@@ -339,5 +359,6 @@ void updateStudent(void)
         rewind(studentPtr); // returns the cursor to the begining of the file 
         fclose(studentPtr);
     }
-    menu();
+    // this goes to the customized view of the librabrian
+    // menu();
 }
