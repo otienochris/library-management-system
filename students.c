@@ -53,7 +53,7 @@ void addStudent(void)
         scanf("%u", &student2_id);
         char info = 'n'; // give info if process success
             
-        while (!feof(studentPtr))
+        while (!feof(studentPtr) && student2_id != 0)
         {
             fread(&student2, sizeof(STUDENT2), 1, studentPtr);
             if (student2_id == student2.id)
@@ -90,7 +90,7 @@ void addStudent(void)
             // printf("%s","\t\t>");
             // scanf("%29s%29s%29s", student2.course.faculty, student2.course.department, student2.course.course_title);
 
-            while (!feof(studentPtr))
+         /*    while (!feof(studentPtr))
                 {
                     fread(&student2, sizeof(STUDENT2), 1, studentPtr);
                     if (student2_id == student2.id)
@@ -98,7 +98,7 @@ void addStudent(void)
                         puts("\v\t\tError: The student2 id exists");
                         student2_id = 0 ;
                     }
-                }
+                } */
             student2.id = student2_id;
             if (student2_id != 0) 
             {
@@ -194,6 +194,11 @@ void viewStudents(void)
 void deleteStudent(void)
 {
     system("clear");
+
+    puts("\v\t\t\t\t\t\t\t\t````````````````````````````````");
+    puts("\t\t\t\t\t\t\t\t\t\033[22;34mDELETE STUDENT\033[0m");
+    puts("\t\t\t\t\t\t\t\t````````````````````````````````\v\v");
+
     studentPtr = fopen("student.dat", "rb+");
     issuedBookPtr = fopen("issuedBook.dat", "rb+");
 
@@ -209,7 +214,7 @@ void deleteStudent(void)
     char stop = 'n'; // to halt the loop when the record is found
 
     // entry of id used for verification
-    printf("%s", "\v\v\t\tEnter an id of the book to update ->");
+    printf("%s", "\v\v\t\t\t\t\tEnter an id of the book to update ->");
     unsigned int student_id;
     scanf("%u", &student_id);
 
@@ -232,7 +237,9 @@ void deleteStudent(void)
 
                 int result = fread(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
                     if (result != 0 && student_id == issuedbook.student_id) {
-                        puts("\v\v\v\v\t\t\tError: The student record can not be deleted while having books");
+                        puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________");
+                        puts("\n\t\t\t\t\t Error: The student record can not be deleted while having books\n");
+                        puts("\t\t\t\t\t________________________________________________________________________________________");
                         del = 1; // ensure no deletion of this record
                         sleep(3);
                     }
@@ -247,11 +254,13 @@ void deleteStudent(void)
                 // set cursor at the begining of the record 
                 fseek(studentPtr, (count - 1)*sizeof(STUDENT2), SEEK_SET);
               
-              printf("%u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
+                puts("\v\v\v\v________________________________________________________________________________________");
+                printf("\t\t\t\t\t%u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
                     student2.id, student2.fname, student2.lname,
                     student2.day,student2.month,student2.year,
                     student2.faculty,student2.department,student2.course_title
                     ); 
+                puts("________________________________________________________________________________________");
             
                 STUDENT2 blankstudent = {0, 0, 0 , 0, "", "" ,"", "", ""};
 
@@ -259,9 +268,9 @@ void deleteStudent(void)
                 // set cursor at the begining of the record 
                 fseek(studentPtr, (count - 1)*sizeof(STUDENT2), SEEK_SET);
                 fwrite(&blankstudent, sizeof(STUDENT2), 1, studentPtr);
-                puts("\v\v\v\v\t\tRecord is successfully deleted ");
-                
-
+                puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________");
+                puts("\t\t\t\t\t  Record is successfully deleted ");
+                puts("\t\t\t\t\t________________________________________________________________________________________");
                 sleep(3);
             }
         }

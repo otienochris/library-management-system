@@ -62,7 +62,8 @@ void addBook(void)
 
     
 
-        while (book_id != 0){
+        if( book_id != 0 )
+        {
             book.id = book_id;
 
             puts("\v\t\tNB:\tMultiple names must be separated using a hyphen(eg c-programming otieno-chris 900)");
@@ -75,31 +76,30 @@ void addBook(void)
 
          
             fwrite(&book, sizeof(BOOK), 1, bookPtr);
-
-            int choice;
-            printf("%s", "\n\t\tEnter 1 to continue or 0 to exit: \n");
-            printf("%s", "\v\t\t(Enter your choice here)->\t");
-            scanf("%d", &choice);
-
-            
-            if (choice == 1)
-            {
-                addBook();
-            }
-            else
-            {
-       
-                printf("%s", "\v\t\tloading...\n");
-                sleep(1);
-                printf("%s", "\v\v\t\tNB:\tPlease restart the program to view changes in the files...\n");
-                puts("\t\t---------------------------------------------------------------------------------------");
-                sleep(3);
-            
-            }
-                
-
-
         }
+                
+        int choice;
+        printf("%s", "\n\t\tEnter 1 to continue or 0 to exit: \n");
+        printf("%s", "\v\t\t(Enter your choice here)->\t");
+        scanf("%d", &choice);
+
+        
+        if (choice == 1)
+        {
+            addBook();
+        }
+        else
+        {
+    
+            printf("%s", "\v\t\tloading...\n");
+            sleep(1);
+            printf("%s", "\v\v\t\tNB:\tPlease restart the program to view changes in the files...\n");
+            puts("\t\t---------------------------------------------------------------------------------------");
+            sleep(3);
+            // menu();    
+        }
+
+
 
 }
 
