@@ -240,7 +240,11 @@ void user(void)
             break;
         case 3:
             system("clear");
-            puts("Enter your id and fname");
+            puts("\v\v\v\t\t\t\t\t\t\t\t\t```````````````````````````````````````` ");
+            puts("\t\t\t\t\t\t\t\t\t\t\033[22;34mCONFIRM YOUR DETAILS\033[0m\v");
+            puts("\t\t\t\t\t\t\t\t\t```````````````````````````````````````` \v\v\v\v\v\v");
+
+            printf("\v\v\t\t\tEnter your id and fname\t\t->\t");
             unsigned int id; char fname[40];
             scanf("%u%39s", &id, fname);
             accountDetails(SIZE, id, fname);
