@@ -371,3 +371,248 @@ void updateStudent(void)
     // this goes to the customized view of the librabrian
     // menu();
 }
+
+void searchStudent(void)
+{
+    system("clear");
+
+
+    puts("\v\t\t\t\t\t\t\t\t\t\t````````````````````````");
+    
+    puts("\t\t\t\t\t\t\t\t\t\t\t\033[22;34mSEARCH FOR STUDENTS\033[0m");
+    puts("\t\t\t\t\t\t\t\t\t\t........................\v\v\v\v");
+    studentPtr = fopen("student.dat", "rb+");
+
+    if (studentPtr == NULL)
+    {
+        puts("\v\v\v\t\t\tError opening the student information file");
+    }
+    else
+    {
+        unsigned int search_id;
+        char search_fname[30], stop_search = 'n';
+        int choice;
+
+        printf("%s", "\v\t\t\t\t\t\t________________________________________________________________________________________\n\n"
+                "\t\t\t\t\t\t\t|1| Search by fname\t\t<-- or -->\t\t|2| Search by id\n"
+                "\t\t\t\t\t\t________________________________________________________________________________________\n"
+                );
+        printf("%s", "\v\v\t\t\t\t\t\t(Enter your choice here)\t\t\t\t->\t");
+
+        scanf("%d", &choice);
+
+        switch(choice){
+            case 1:
+
+                printf("%s","\v\v\n\t\t\t\t\t\tEnter the fname of the student to search:\t\t->\t");
+                scanf("%29s", search_fname);
+
+                puts("\v\v\t\t__________________________________________________________________________________________________________________________________________________________________\v"); 
+                puts("\t\t   id\t\t\tfirstName\t\t      lastName   D.O.B\t\t\t\tfaculty   \t\t    depart't\t\t\tcourse");
+                puts("\t\t__________________________________________________________________________________________________________________________________________________________________\v");
+
+                while (!feof(studentPtr) && stop_search == 'n')
+                {
+                    STUDENT student2;
+                    int  result = fread(&student2, sizeof(STUDENT), 1, studentPtr);
+                    
+                    if ((strcmp(student2.fname, search_fname)==0) && (result != 0) )
+                        {
+                            printf("\t\t  %u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
+                                student2.id, student2.fname, student2.lname,
+                                student2.day,student2.month,student2.year,
+                                student2.faculty,student2.department,student2.course_title
+                                ); 
+                        puts("\v\t\t```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
+                        stop_search = 'y'; // stops the search when student is found
+                        }
+
+                }
+                puts("\v");
+                int choice;
+                puts("\v\v\v\v\v\v\v\t\t\t\t\t\t##########################################################################################");
+                printf("\t\t\t\t\t\tEnter 0 to go back to the main menu");
+                printf("%s", "\t\t(Enter your choice here)->\t");
+
+                scanf("%d", &choice);
+
+                if (choice == 0)
+                {
+                    // go to the customized view
+                }
+                
+                
+                break;
+
+            case 2:
+                
+                printf("%s","\v\v\n\t\t\t\t\t\tEnter the id of the student to search:\t\t\t->\t");
+                scanf("%d", &search_id);
+                puts("\v\v\t\t__________________________________________________________________________________________________________________________________________________________________\v");
+                puts("\t\t   id\t\t\tfirstName\t\t      lastName   D.O.B\t\t\t\tfaculty   \t\t    depart't\t\t\tcourse");
+                puts("\t\t__________________________________________________________________________________________________________________________________________________________________\v");
+                    
+              
+                while (!feof(studentPtr) && stop_search == 'n')
+                {
+                    STUDENT student2;
+                    int  result = fread(&student2, sizeof(STUDENT), 1, studentPtr);
+                    
+                    if ( student2.id == search_id && (result != 0) )
+                        {
+                            printf("\t\t  %u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
+                                student2.id, student2.fname, student2.lname,
+                                student2.day,student2.month,student2.year,
+                                student2.faculty,student2.department,student2.course_title
+                                ); 
+                        puts("\v\t\t```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
+                        stop_search = 'y'; // stops the search when student found
+                        
+                        }
+
+                }
+                
+                puts("\v");
+
+                int choice2;
+                puts("\v\v\v\v\v\v\v\t\t\t\t\t\t##########################################################################################");
+                printf("\t\t\t\t\t\tEnter 0 to go back to the main menu");
+                printf("%s", "\t\t(Enter your choice here)->\t");
+
+                scanf("%u", &choice2);
+
+                if (choice2 == 0)
+                {
+                    // go to the customized view                    
+                }
+
+        }
+
+
+        fclose(studentPtr);
+        // go to the customized view
+
+        }
+}
+
+void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
+{
+    system("clear");
+    studentPtr = fopen("student.dat", "rb+");
+    issuedBookPtr = fopen("issuedBook.dat", "rb+");
+    bookPtr = fopen("books.dat", "rb+");
+    if (studentPtr == NULL) {
+        puts("\v\v\t\t\tError: Could not open the required files!");
+    }
+    else
+    {
+        
+        char stop_search = 'n';
+        puts("\v\v\t\t__________________________________________________________________________________________________________________________________________________________________\v");
+        puts("\t\t   id\t\t\tfirstName\t\t      lastName   D.O.B\t\t\t\tfaculty   \t\t    depart't\t\t\tcourse");
+        puts("\t\t__________________________________________________________________________________________________________________________________________________________________\v");
+        while (!feof(studentPtr) && stop_search == 'n')
+        {
+            STUDENT student2;
+            int  result = fread(&student2, sizeof(STUDENT), 1, studentPtr);
+            
+            if (student2.id != 0 && student2.id == id && strcmp(student2.fname, fname) == 0 && (result != 0) )
+                {
+                    printf("\t\t  %u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
+                        student2.id, student2.fname, student2.lname,
+                        student2.day,student2.month,student2.year,
+                        student2.faculty,student2.department,student2.course_title
+                        ); 
+                puts("\v\t\t```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
+                stop_search = 'y'; // stops the search when student found
+                
+                }
+
+        }
+
+        // checks if the user borrowed a book
+        while(!feof(issuedBookPtr)){
+            ISSUEDBOOK issuedbook;
+            int result = fread(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
+            if (result != 0 && issuedbook.student_id == id) 
+            {
+                // checks for the book records
+                while(!feof(bookPtr)){
+                    BOOK2 book;
+                    int result = fread(&book, sizeof(BOOK2), 1, bookPtr);
+                    if (result != 0 && book.id == issuedbook.book_id) {
+                        
+                    }
+                    
+                }
+            }
+            
+        }
+        
+            
+            puts("\v");
+
+            int choice2;
+            puts("\v\v\v\v\v\v\v\t\t\t\t\t\t##########################################################################################");
+            printf("\t\t\t\t\t\tEnter 0 to go back to the main menu");
+            printf("%s", "\t\t(Enter your choice here)->\t");
+
+            scanf("%u", &choice2);
+
+            if (choice2 == 0)
+            {
+                // go to the customized view                    
+            }
+    }
+}
+
+void passReset(int SIZE, char lname[SIZE], unsigned int day,unsigned int month,unsigned int year)
+{
+    system("clear");
+    studentPtr = fopen("student.dat", "rb+");
+    if (studentPtr == NULL) {
+        puts("Error: Could not open the student records");
+    }
+    else
+    {
+        char stop_search = 'n';
+        puts("\v\v\t\t__________________________________________________________________________________________________________________________________________________________________\v");
+        puts("\t\t   id\t\t\tfirstName\t\t      lastName   D.O.B\t\t\t\tfaculty   \t\t    depart't\t\t\tcourse");
+        puts("\t\t__________________________________________________________________________________________________________________________________________________________________\v");
+        while (!feof(studentPtr) && stop_search == 'n')
+        {
+            STUDENT student2;
+            int  result = fread(&student2, sizeof(STUDENT), 1, studentPtr);
+            
+            if ( strcmp(student2.lname, lname) == 0 && student2.day == day && student2.month == month && student2.year == year && (result != 0) )
+            {
+                printf("\t\t  %u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
+                    student2.id, student2.fname, student2.lname,
+                    student2.day,student2.month,student2.year,
+                    student2.faculty,student2.department,student2.course_title
+                    ); 
+            puts("\v\t\t```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
+            stop_search = 'y'; // stops the search when student found
+            
+            }
+        }
+        if (stop_search == 'n') {
+            printf("Invalid entry");
+        }
+        puts("\v");
+
+            int choice2;
+            puts("\v\v\v\v\v\v\v\t\t\t\t\t\t##########################################################################################");
+            printf("\t\t\t\t\t\tEnter 0 to go back to the main menu");
+            printf("%s", "\t\t(Enter your choice here)->\t");
+
+            scanf("%u", &choice2);
+
+            if (choice2 == 0)
+            {
+                // go to the customized view                    
+            }
+        
+    }
+    fclose(studentPtr);       
+}

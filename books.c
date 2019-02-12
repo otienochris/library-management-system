@@ -113,7 +113,7 @@ void searchBook(void)
     
     puts("\t\t\t\t\t\t\t\t\t\t\t\033[22;34mSEARCH BOOK\033[0m");
     puts("\t\t\t\t\t\t\t\t\t\t........................\v\v\v\v");
-    bookPtr = fopen("books.dat", "rb");
+    bookPtr = fopen("books.dat", "rb+");
 
     if (bookPtr == NULL)
     {
@@ -168,6 +168,7 @@ void searchBook(void)
                     // go to the customized view
                 }
                 
+                
                 break;
 
             case 2:
@@ -186,6 +187,7 @@ void searchBook(void)
                     if ( (result != 0) &&  book.id == search_id  )
                         {
                         printf("\t\t\t\t\t\t%d\t%s\t\t\t\t%s\t\t\t\t%d\n", book.id, book.title, book.author, book.copies);
+                        
                         puts("\v\t\t\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````");
                         }
 
@@ -366,14 +368,13 @@ void issueBook(void)
             }
 
             // message if the book is out of stock
-            while(stop == 'n'){
+            if(stop == 'n'){
                 puts("\v\v\v\v\t\t\t\tOops! The book is out of stock!!!");
-                stop = 'y'; // terminate this loop
             }
         }
 
         // executes when the student exists
-        while (x == TRU && y == FOLS )
+        if(x == TRU && y == FOLS )
         {
             puts("\v\v\t\t\tstoring the data..\v");
             sleep(1);
@@ -383,7 +384,7 @@ void issueBook(void)
             // issuedbook.title = book.title; 
             fwrite(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
 
-            x = FOLS; // just to demonstrate that x changed
+            // x = FOLS; // just to demonstrate that x changed
             
         }
     
@@ -748,4 +749,5 @@ void returnBook(void)
         // menu();
     }
 }
+
 
