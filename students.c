@@ -8,8 +8,6 @@ typedef struct
 
 typedef struct
 {
-    // COURSE course;
-    // DATE dob;
     unsigned int day, id, month, year ;
     char  fname[30], lname[30];
     char faculty[30], department[30], course_title[30];
@@ -22,7 +20,7 @@ int main();
 
 BOOK2 book2;
 STUDENT2 student2;
-// ISSUEDBOOK2 issuedbook2;
+
 // a function that adds a student2's information
 void addStudent(void)
 {
@@ -191,6 +189,7 @@ void viewStudents(void)
             }
 }
 
+// a function used to delete a student record 
 void deleteStudent(void)
 {
     system("clear");
@@ -291,6 +290,7 @@ void deleteStudent(void)
     // menu();
 }
 
+// a function used to update a student record except the id
 void updateStudent(void)
 {
     system("clear");
@@ -372,6 +372,7 @@ void updateStudent(void)
     // menu();
 }
 
+// a function used to search for a student's record
 void searchStudent(void)
 {
     system("clear");
@@ -495,6 +496,7 @@ void searchStudent(void)
         }
 }
 
+// a function that displays the student's info and books they borrowed
 void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
 {
     system("clear");
@@ -616,6 +618,7 @@ void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
     fclose(issuedBookPtr);
 }
 
+// a function used by a student to check for their log in details when they forget
 void passReset(int SIZE, char lname[SIZE], unsigned int day,unsigned int month,unsigned int year)
 {
     system("clear");

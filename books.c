@@ -1,21 +1,22 @@
-// #include "structs.c"
 #include <stdio.h>
 #include <time.h>
 
+// struct used to store issuedbook info
 typedef struct
 {
     unsigned int student_id, book_id;
-    char fname[30], title[30];    
 } ISSUEDBOOK;
+
+// struct to store book info
 typedef struct
 {
     unsigned int id, copies;
     char title[30], author[30];
 } BOOK;
+
+// struct used to student info
 typedef struct
 {
-    // COURSE course;
-    // DATE dob;
     unsigned int day, id, month, year ;
     char  fname[30], lname[30];
     char faculty[30], department[30], course_title[30];
@@ -23,11 +24,10 @@ typedef struct
 
 void menu(void);
 
-//  global pointer
+//  global pointers
 FILE *bookPtr, *studentPtr, *userPtr, *issuedBookPtr;
 
 // global struct declaration
-// BOOK book;
 STUDENT student;
 ISSUEDBOOK issuedbook;
 
@@ -36,68 +36,67 @@ void addBook(void)
 {
     system("clear");
     unsigned int book_id;
+
+    // initial book struct
     BOOK book;
 
+    // open the books file
     bookPtr = fopen("books.dat", "a+");
 
     puts("\v\v\t\t\t\t\t\tAdd Book:");
     printf("%s", "\n\t\tEnter 0 as book id to exit: \n");
 
-
+    // enter id for verification
     printf("%s", "\v\v\t\tEnter book id: ");
     scanf("%u", &book_id);
         
-            
-        while (!feof(bookPtr))
+    // scan the books records to check if the id exist       
+    while (!feof(bookPtr))
+    {
+        fread(&book, sizeof(BOOK), 1, bookPtr);
+        if (book_id == book.id)
         {
-            fread(&book, sizeof(BOOK), 1, bookPtr);
-            if (book_id == book.id)
-            {
-                puts("\v\t\tError: The book id exists");
-                sleep(2);
-                book_id = 0 ;
-            }
+            puts("\v\t\tError: The book id exists");
+            sleep(2);
+            book_id = 0 ;
         }
+    }
 
 
-    
 
-        if( book_id != 0 )
-        {
-            book.id = book_id;
+    // if book does not exist, enter the records of the new book
+    if( book_id != 0 )
+    {
+        book.id = book_id;
 
-            puts("\v\t\tNB:\tMultiple names must be separated using a hyphen(eg c-programming otieno-chris 900)");
-            puts("\t\t---------------------------------------------------------------------------------------------------");
-            printf("%s", "\n\v\t\tEnter title, author and copies (e.g c-programming christopher 100 )\t>\t");
+        puts("\v\t\tNB:\tMultiple names must be separated using a hyphen(eg c-programming otieno-chris 900)");
+        puts("\t\t---------------------------------------------------------------------------------------------------");
+        printf("%s", "\n\v\t\tEnter title, author and copies (e.g c-programming christopher 100 )\t>\t");
 
-
-            // fscanf(stdin, "%14s%9s%d", book.title, book.author, &book.copies);
-            scanf("%29s%29s%d", book.title, book.author, &book.copies);
-
-         
-            fwrite(&book, sizeof(BOOK), 1, bookPtr);
-        }
+        scanf("%29s%29s%d", book.title, book.author, &book.copies);
+        // write the details of the new book to file
+        fwrite(&book, sizeof(BOOK), 1, bookPtr);
+    }
+    fclose(bookPtr); // close the books file
                 
-        int choice;
-        printf("%s", "\n\t\tEnter 1 to continue or 0 to exit: \n");
-        printf("%s", "\v\t\t(Enter your choice here)->\t");
-        scanf("%d", &choice);
+    // navigation: continue or exit
+    int choice;
+    printf("%s", "\n\t\tEnter 1 to continue or 0 to exit: \n");
+    printf("%s", "\v\t\t(Enter your choice here)->\t");
+    scanf("%d", &choice);
 
-        
-        if (choice == 1)
-        {
-            addBook();
-        }
-        else
-        {
-    
-            printf("%s", "\v\t\tloading...\n");
-            sleep(1);
-            printf("%s", "\v\v\t\tNB:\tPlease restart the program to view changes in the files...\n");
-            puts("\t\t---------------------------------------------------------------------------------------");
-            sleep(3);
-            // menu();    
-        }
+    // go back to the same function        
+    if (choice == 1)
+    {
+        addBook();
+    }
+    // exit to the main menu
+    else
+    {
+
+        printf("%s", "\v\t\tloading...\n");
+        sleep(3);
+    }
 
 
 
@@ -266,6 +265,7 @@ void viewBooks(void)
     }
 }
 
+// a function that's used to issue books and update all the dependent records
 void issueBook(void)
 {
     system("clear");
@@ -411,6 +411,7 @@ void issueBook(void)
     }
 }
 
+// a list of the students' id against the book's id they borrowed
 void viewIssuedBook(void)
 {
     system("clear"); // works only on ubuntu
@@ -460,6 +461,7 @@ void viewIssuedBook(void)
     }
 }
 
+// a function to update the books' records except the id
 void updateBook(void)
 {
     system("clear");
@@ -548,7 +550,7 @@ void updateBook(void)
 
 }
 
-
+// a function to delete a book
 void deleteBook(void)
 {
     system("clear"); // on windows system("cls");
@@ -662,6 +664,7 @@ void deleteBook(void)
     }
 }
 
+// a function used to return a book and update all the dependent records
 void returnBook(void)
 {
     system("clear");
@@ -687,11 +690,12 @@ void returnBook(void)
 
 
         // delete record from issuedbook list
-        int count = 0;
+        int count = 0; // keep track of the record number scanned
         while(!feof(issuedBookPtr))
         {
 
             ISSUEDBOOK issuedbook;
+            // to check if the record is read (returns 1 when read otherwise 0)
             int result = fread(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
             count += result;
 
@@ -699,11 +703,13 @@ void returnBook(void)
             {   
                 tru = 'n'; // changed when record exists
                 fseek(issuedBookPtr, (count - 1)*sizeof(ISSUEDBOOK), SEEK_SET );
-                ISSUEDBOOK blankbook = { 0, 0, "", "" };
+                ISSUEDBOOK blankbook = { 0, 0};
                 fseek(issuedBookPtr, (count - 1)*sizeof(ISSUEDBOOK), SEEK_SET );
                 fwrite(&blankbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
             }
         }
+
+        // return the cursor to the beginning of the first record
         rewind(issuedBookPtr);
         fclose(issuedBookPtr);
 
@@ -718,8 +724,11 @@ void returnBook(void)
             if (result1 != 0 && book_id == book.id) 
             {
                 fols = 'n';
+                // mov cursor to the record
                 fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
+                // increment the returned book's record by incrementing it by 1
                 ++book.copies;
+                // mov cursor to the record
                 fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
                 fwrite(&book, sizeof(BOOK), 1, bookPtr);
             }
@@ -749,5 +758,4 @@ void returnBook(void)
         // menu();
     }
 }
-
 
