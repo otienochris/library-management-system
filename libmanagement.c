@@ -3,9 +3,9 @@
 #include <time.h>
 #include <unistd.h> // clear-screen
 #include <string.h>
-// #include "structs.c" // contains all the structs used 
 #include "books.c"  // contain functions that involves the books
 #include "students.c"  // contains all functions that involve the book
+#define SIZE 40
 
 typedef struct
 {
@@ -54,21 +54,25 @@ int main (void)
 
     printf("%s", "\v\t\t\t\t\t\t\t\t\t(Enter your choice here)->\t");
     scanf("%d", &choice);
-    int SIZE = 40;
     
     switch (choice)
     {
         case 1:
+            // log in page
             login();
             break;
         case 2:
+            // recover your deatails
             printf("\v\v\t\t\t\t\t\tEnter your last name and your date of birth\n\t\t\t\t\t\t(eg otieno (day) (month) (year) i.e 12 12 1998)\t\t->\t");
             char lname[40]; unsigned int day,month,year;
             scanf("%39s%u%u%u", lname, &day, &month, &year);
+
+            // pass the entered variables
             passReset(SIZE, lname, day, month, year);
             main();
             break;
         case 3:
+            // add students function
             addStudent();
             main();
             break;
@@ -83,11 +87,13 @@ int main (void)
             puts("\v\v\v\v\t\t\t\t\t\tDone...BYE!\n");
             sleep(1);
             system("clear");
+            // exit the program
             exit(1);
             break;
     }     
 }
 
+// log in page for 
 void login(void)
 {
     system("clear");
@@ -112,6 +118,7 @@ void login(void)
     switch (choice)
     {
         case 1:
+            // log in of the librarian
             system("clear");
             puts("\t\t\t\t\t\t\t\t\t\t\t\033[22;34mLIBRARIAN LOG IN\033[0m\n");
 
@@ -147,7 +154,7 @@ void login(void)
                     printf("\t\t\t\tError: Wrong cridentials. \n");
                     printf("\t\t\t_______________________________________________________________________________________________\n\n");
                     sleep(2);
-                    login();
+                    main();
                 }  
 
             }
@@ -201,6 +208,7 @@ void login(void)
 
 }
 
+// the view of validated students
 void user(void)
 {
     system("clear");    // works only for linux sys (windows system("cls"))
@@ -220,17 +228,14 @@ void user(void)
         "\t\t\t\t\t\t_______________________________________________________________________________________________\n"
         );
 
-         time2();
-        // puts("\v\t\t******************************");
+        time2(); // the time function
         printf("%s", "\v\t\t\t\t\t\t\t\t\t(Enter your choice here)->\t");
         scanf("%d", &choice);
-        int SIZE = 40;
 
     switch (choice)
     {
         case 1:
-            // viewAdmin();
-            // addAdmin();
+            // view the list of the books
             viewBooks();
             user();
             break;
@@ -256,12 +261,12 @@ void user(void)
             break;
     
         default:
-            // main();
+            main();    
             break;
     }
-    main();    
 }
 
+// function that provides the date and time
 void time2(void)
 {
     time_t t = time(NULL);
@@ -274,7 +279,7 @@ void time2(void)
 // admin view 
 void menu(void)
 {
-    system("clear");    // works only for linux sys
+    system("clear");    // works only for linux sys //system("cls")
 
     int choice;
     puts("\v\v\v\t\t\t\t\t\t\t\t\t```````````````````````````````````````` ");
@@ -295,17 +300,17 @@ void menu(void)
         "\t\t\t\t\t\t\t\t|6| view issued book  \t\t|12| view student\n"
         "\t\t\t\t\t\t***********************************************************************************************\n"
         "\v\v\t\t\t\t\t\t_______________________________________________________________________________________________\n\n"
-        "\t\t\t\t\t\t\t|-1| Add admin\t\t|-2| View Admins\t|-3| Delete Admin\t|0| Exit\n"
-        // "\t\t\t\t\t\t\t\t\t\t|0| Exit\n   "
+        "\t\t\t\t\t\t\t|-1| Add admin\t\t|-2| View Admins\t|-3| Delete Admin\t|0| Log-out\n"
         "\t\t\t\t\t\t_______________________________________________________________________________________________\n"
         );
 
-        time_t t = time(NULL);
-    struct tm tm = *localtime(&t);
-    printf("\v\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tTime is: %d:%d:%d\ton: %d-%d-%d \n", 
-        tm.tm_hour, tm.tm_min, tm.tm_sec,
-        tm.tm_mday, tm.tm_mon,tm.tm_year + 1900); 
-    // puts("\v\t\t******************************");
+    time2();
+
+    //     time_t t = time(NULL);
+    // struct tm tm = *localtime(&t);
+    // printf("\v\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tTime is: %d:%d:%d\ton: %d-%d-%d \n", 
+    //     tm.tm_hour, tm.tm_min, tm.tm_sec,
+    //     tm.tm_mday, tm.tm_mon,tm.tm_year + 1900); 
     printf("%s", "\v\t\t\t\t\t\t\t\t\t(Enter your choice here)->\t");
     scanf("%d", &choice);
 
@@ -313,70 +318,82 @@ void menu(void)
     switch (choice)
     {
     case 1:
+        // search for a student by id
         searchStudent();
         menu();
         break;
     case 2:
-        // validatedBookId();
+        // add a book that has a unique id
         addBook();
         menu();
         break;
     case 3:
+        // search for a book by name or id
         searchBook();
         menu();
         break;
     case 4:
+        // view list of books
         viewBooks();
         menu();
         break;
     case 5:
+        // issue book upto 3 copies
         issueBook();
         menu();
         break;
     case 6:
+        // view list of all issued books against student id
         viewIssuedBook();
         menu();
         break; 
     case 7:
+        // update book details except the id
         updateBook();
         menu();
         break;
     case 8:
+        // delete book records that are not borrowed
         deleteBook();
         menu();
         break;
     case 9:
+        // returns a book to the main inventory and updates the records
         returnBook();
         menu();
         break;
     case 10:
+        // delete student who has not borrowed a book
         deleteStudent();
         menu();
         break;
     case 11:
+        // update student who has not borrowed a book 
         updateStudent();
         menu();
         break;
     case 12:
+        // view a list of all registered students
         viewStudents();
         menu();
         break;
     case -1:
+        // add admin by another admin
         addAdmin();
         menu();
         break;
     case -2:
+        // view admin list
         viewAdmin();
-        // sleep(3);
         menu();
         break;
     case -3:
+        // delete registered admin (done by another admin)
         deleteAdmin();
-        // sleep(3);
         menu();
         break;
     case 0:
-        // puts("Bye");
+        // exits to the main menu
         main();
         break;
     default:
@@ -388,11 +405,12 @@ void menu(void)
 
 }
 
+// a function to add an admin by another admin
 void addAdmin(void)
 {
     system("clear");
     puts("\v\v\v\t\t\t\t\t\t\t\t\t```````````````````````````````````````` ");
-    puts("\t\t\t\t\t\t\t\t\t\t\033[22;34mADD ADMIN\033[0m");
+    puts("\t\t\t\t\t\t\t\t\t\t\t\033[22;34mADD ADMIN\033[0m\n");
     puts("\t\t\t\t\t\t\t\t\t```````````````````````````````````````` \v\v\v\v\v\v");
     userPtr = fopen("admin.dat", "a+");
 
@@ -403,27 +421,33 @@ void addAdmin(void)
     {
         ADMIN admin;
 
-        // char user_name[40];
-        char dont_save = 'n';
+        
+        char dont_save = 'n', user_name[40];
+        printf("\v\v\t\t\tEnter your username (a unique one)\t\t\t\t->\t");
+        scanf("%s", user_name);
 
-        printf("\v\v\t\t\tEnter your first name and your last name (eg otieno chris) ->\t");
-        scanf("%39s%39s", admin.fname, admin.lname);
+        while(!feof(userPtr) && dont_save == 'n')
+        {
+            fread(&admin, sizeof(ADMIN), 1, userPtr);
+            if (strcmp(admin.username, user_name) == 0) {
+                puts("\v\v\t\t\tError: The username exists!");
+                sleep(2);
+                dont_save = 'y';
+            }
+        }
+        if(dont_save == 'n')
+        {
+    
+            printf("\v\v\t\t\tEnter your first name and your last name (eg otieno chris)\t->\t");
+            scanf("%39s%39s", admin.fname, admin.lname);
+            strcpy(admin.username,user_name);
 
-        printf("\v\v\t\t\tEnter the username and passworsd (eg chrisly s13/09426@17) ->\t");
-        scanf("%39s%59s", admin.username, admin.password);
-        // admin.username = user_name;
-        // while(!feof(userPtr) && dont_save == 'n')
-        // {
-        //     fread(&admin, sizeof(ADMIN), 1, userPtr);
-        //     if (strcmp(admin.username, user_name) == 0) {
-        //         puts("Error: The username exists!");
-        //         dont_save = 'y';
-        //     }
-        // }
+            printf("\v\v\t\t\tEnter the username and passworsd (eg chrisly s13/09426@17)\t->\t");
+            scanf("%59s", admin.password);
 
-        if(dont_save == 'n'){
             fwrite(&admin, sizeof(ADMIN), 1, userPtr);
-            puts("Record successfully saved");
+            puts("\v\v\v\t\t\tRecord successfully saved");
+            sleep(2);
             fclose(userPtr);
         }
             
@@ -431,11 +455,12 @@ void addAdmin(void)
     }
 }
 
+// list of all registered admins
 void viewAdmin(void)
 {
     system("clear");
     puts("\v\v\v\t\t\t\t\t\t\t\t\t```````````````````````````````````````` ");
-    puts("\t\t\t\t\t\t\t\t\t\t\033[22;34mVIEW ADMIN\033[0m");
+    puts("\t\t\t\t\t\t\t\t\t\t\t\033[22;34mVIEW ADMIN\033[0m\n");
     puts("\t\t\t\t\t\t\t\t\t```````````````````````````````````````` \v\v\v\v\v\v");
     userPtr = fopen("admin.dat", "rb+");
 
@@ -444,19 +469,20 @@ void viewAdmin(void)
     }
     else
     {
-            puts("\v\v\t\t\t\t\t\t\t First_name\t\t\t     Last_name\t\t\t          User_name");
-            puts("\t\t\t\t\t\t\t_______________________________________________________________________________________\v");
+            puts("\v\v\t\t\t\t\t\t_________________________________________________________________________________________________\v");
+            puts("\t\t\t\t\t\t\t First_name\t\t  Last_name\t\t      User_name");
+            puts("\t\t\t\t\t\t_________________________________________________________________________________________________\v");
         while(!feof(userPtr)){
             // puts("was here");
             ADMIN admin;
             int result = fread(&admin, sizeof(ADMIN), 1, userPtr);
-            if (result != 0 ) {
-                printf("\t\t\t %39s%39s%39s\n", admin.fname, admin.lname, admin.username);
-                puts("\t\t\t\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````");
+            if (result != 0 && strcmp(admin.fname, "") != 0) {
+                printf("\t\t\t\t %30s%30s%30s\n", admin.fname, admin.lname, admin.username);
+                puts("\t\t\t\t\t\t`````````````````````````````````````````````````````````````````````````````````````````````````");
 
             }
         }
-        puts("\v\t\t\t\t\t\t\t_______________________________________________________________________________________\v");
+        puts("\v\t\t\t\t\t\t_________________________________________________________________________________________________\v");
 
         fclose(userPtr);
 
@@ -474,6 +500,7 @@ void viewAdmin(void)
     }
 }
 
+// view to delete an admin by another admin
 void deleteAdmin(void)
 {
 
@@ -500,9 +527,9 @@ void deleteAdmin(void)
             count += result; // keeps track of the record we are at
 
             if (strcmp(user_name, admin.username)==0 && result != 0) {
-                puts("\v\v\v\v\t\t\t________________________________________________________________________________________\n");
-                printf("\t\t\tRecord to be deleted ->%39s%39s%39s\n",  admin.fname, admin.lname, admin.username); 
-                puts("\t\t\t________________________________________________________________________________________");
+                puts("\v\v\v\v\t\t\t_________________________________________________________________________________________________________________\n");
+                printf("\t\t\tRecord to be deleted ->%25s%25s%25s\n",  admin.fname, admin.lname, admin.username); 
+                puts("\t\t\t_________________________________________________________________________________________________________________");
                 
                 // confirm of deletion
                 int confirm;
@@ -510,15 +537,15 @@ void deleteAdmin(void)
                 scanf("%d", &confirm);
 
                 if (confirm == 1) 
-                {   puts("\v\v\v\v\t\t\t________________________________________________________________________________________");
+                {   puts("\v\v\v\v\t\t\t________________________________________________________________________________________________________________");
                     puts("\n\t\t\t\t\t\tHurray: Record is successfully deleted ");
-                    puts("\t\t\t________________________________________________________________________________________");
+                    puts("\t\t\t_______________________________________________________________________________________________________________");
                 
                 // set the cursor to the begining of the right record
                 fseek(userPtr, (count -1)*sizeof(ADMIN), SEEK_SET);
                 fread(&admin, sizeof(ADMIN), 1, userPtr);
                 
-                ADMIN blankadmin = {"", "", "", ""};
+                ADMIN blankadmin = {" "," " ," "," " };
                 
                 // place the cursor back to the beginning of the deleted record's space
                 fseek(userPtr, (count -1)*sizeof(ADMIN), SEEK_SET);
@@ -526,9 +553,9 @@ void deleteAdmin(void)
                 }
                 else
                 {
-                    puts("\v\v\v\v\t\t\t________________________________________________________________________________________");
-                    printf("\t\t\t\tRetained record -> \t%39s%39s%39s\n\n",admin.fname, admin.lname, admin.username);  
-                    puts("\t\t\t________________________________________________________________________________________");
+                    puts("\v\v\v\v\t\t\t_______________________________________________________________________________________________________________");
+                    printf("\n\t\t\t\tRetained record -> \t%25s%25s%25s\n\n",admin.fname, admin.lname, admin.username);  
+                    puts("\t\t\t_______________________________________________________________________________________________________________");
                       
                 }
 

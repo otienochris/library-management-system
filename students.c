@@ -110,9 +110,9 @@ void addStudent(void)
         {
             puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________\n");
             printf("%s", "\t\t\t\t\t *The record is successfully saved.\n\n");
-            printf("%s", "\t\t\t\t\t *Restart the program to view changes in the files...\n");
             puts("\t\t\t\t\t________________________________________________________________________________________\n");
         } 
+        fclose(studentPtr);
             
             puts("\v");
             
@@ -132,7 +132,6 @@ void addStudent(void)
             {
                 addStudent();
             }
-        fclose(studentPtr);
     }
 
 }
@@ -142,10 +141,11 @@ void viewStudents(void)
 {
     system("clear");
 
-    puts("\v\t\t\t\t\t\tLIST OF REGISTERED STUDENT2S:");
-    puts("\t\t\t\t\t\t____________________________\v\v");
+    puts("\v\t\t\t\t\t\t\t\t\t````````````````````````````````");
+    puts("\t\t\t\t\t\t\t\t\t   \033[22;34mALIST OF ALL STUDENTS\033[0m\n");
+    puts("\t\t\t\t\t\t\t\t\t````````````````````````````````\v\v");
 
-    studentPtr = fopen("student.dat", "rb");
+    studentPtr = fopen("student.dat", "rb+");
 
     if (studentPtr == NULL)
     {
@@ -153,8 +153,8 @@ void viewStudents(void)
     }
     else
         {
-            puts("\t   id\t\t\tfirstName\t\t      lastName   D.O.B\t\t\t\tfaculty   \t\t    depart't\t\t\tcourse");
-            puts("\t_________________________________________________________________________________________________________________________________________________________________\v");
+            puts("\t   id\t\t\tfirstName\t\t      lastName   \tD.O.B\t\t\t\tfaculty   \t\t    depart't\t\t\tcourse");
+            puts("\t_____________________________________________________________________________________________________________________________________________________________________________________________\v");
             while (!feof(studentPtr))
             {
                 int result = fread(&student2, sizeof(STUDENT2), 1, studentPtr);
@@ -165,7 +165,7 @@ void viewStudents(void)
                     student2.day,student2.month,student2.year,
                     student2.faculty,student2.department,student2.course_title
                     );  
-                    puts("\t````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````\n");
+                    puts("\t`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````\n");
 
                 }
                 
@@ -213,7 +213,7 @@ void deleteStudent(void)
     char stop = 'n'; // to halt the loop when the record is found
 
     // entry of id used for verification
-    printf("%s", "\v\v\t\t\t\t\tEnter an id of the book to update ->");
+    printf("%s", "\v\v\t\t\t\t\tEnter an id of the student to delete ->");
     unsigned int student_id;
     scanf("%u", &student_id);
 
@@ -243,6 +243,7 @@ void deleteStudent(void)
                         sleep(3);
                     }
             }
+            fclose(issuedBookPtr);
             
             // if student2 having no book the delete
             while(del == 0 )
@@ -253,28 +254,44 @@ void deleteStudent(void)
                 // set cursor at the begining of the record 
                 fseek(studentPtr, (count - 1)*sizeof(STUDENT2), SEEK_SET);
               
-                puts("\v\v\v\v________________________________________________________________________________________");
-                printf("\t\t\t\t\t%u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
+                puts("\v\v\v\v\t\t\t\t\t__________________________________________________________________________________________________________________________________________________________________");
+                printf("\n\t\t\t\t\t %u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
                     student2.id, student2.fname, student2.lname,
                     student2.day,student2.month,student2.year,
                     student2.faculty,student2.department,student2.course_title
                     ); 
-                puts("________________________________________________________________________________________");
+                puts("\t\t\t\t\t__________________________________________________________________________________________________________________________________________________________________");
             
-                STUDENT2 blankstudent = {0, 0, 0 , 0, "", "" ,"", "", ""};
+                int confirm;
+                printf("\v\v\v\t\t\t\t\tConfirm deletion by entering 1 otherwise 0 (then press enter key)\t\t ->\t");
+                scanf("%d", &confirm);
+                if (confirm == 1) 
+                { 
+                    STUDENT2 blankstudent = {0, 0, 0 , 0, "", "" ,"", "", ""};
 
 
-                // set cursor at the begining of the record 
-                fseek(studentPtr, (count - 1)*sizeof(STUDENT2), SEEK_SET);
-                fwrite(&blankstudent, sizeof(STUDENT2), 1, studentPtr);
-                puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________");
-                puts("\t\t\t\t\t  Record is successfully deleted ");
-                puts("\t\t\t\t\t________________________________________________________________________________________");
-                sleep(3);
+                    // set cursor at the begining of the record 
+                    fseek(studentPtr, (count - 1)*sizeof(STUDENT2), SEEK_SET);
+                    fwrite(&blankstudent, sizeof(STUDENT2), 1, studentPtr);
+                    puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________");
+                    puts("\t\t\t\t\t  Record is successfully deleted ");
+                    puts("\t\t\t\t\t________________________________________________________________________________________");
+                    sleep(2);
+                }
+                else
+                {
+                    puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________");
+                    printf("\t\t\t\t\tRetained record ");
+                    puts("\t\t\t\t\t________________________________________________________________________________________");
+                    sleep(2);
+                }
+                
             }
         }
 
     }
+    rewind(studentPtr); // returns the cursor to the begining of the file 
+    fclose(studentPtr);
 
     // variable stop does not change if the book does not exist
     while(stop == 'n'){
@@ -283,11 +300,8 @@ void deleteStudent(void)
         sleep(2);
     }
     
-    rewind(studentPtr); // returns the cursor to the begining of the file 
-    fclose(studentPtr);
     }
-    // this goes to the customized view of the librabrian
-    // menu();
+
 }
 
 // a function used to update a student record except the id
@@ -357,19 +371,18 @@ void updateStudent(void)
                 }
 
             }
+        rewind(studentPtr); // returns the cursor to the begining of the file 
+        fclose(studentPtr);
 
         // variable stop does not change if the book does not exist
         while(stop == 'n'){
-            puts("\v\v\t\t\tError: The book id does not exist");
+            puts("\v\v\t\t\tError: The student id does not exist");
             stop = 'y'; // terminate the loop
             sleep(2);
         }
         
-        rewind(studentPtr); // returns the cursor to the begining of the file 
-        fclose(studentPtr);
     }
-    // this goes to the customized view of the librabrian
-    // menu();
+    
 }
 
 // a function used to search for a student's record
@@ -557,7 +570,8 @@ void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
         puts("\t\t\t\t\t\t\t\t\t```````````````````````````````````````` ");
 
         puts("\v\v\t\t\t\t________________________________________________________________________________________________________________________");    
-        puts("\v\t\t\t\t\tBook_id\t\t\tTitle\t\t\tAuthor");
+        puts("\v\t\t\t\t\tStudent_id\t\t\tBook_id\t\t\t\t\tAuthor");
+        // puts("Book_id\t\t\tTitle\t\t\tAuthor");
         puts("\t\t\t\t________________________________________________________________________________________________________________________");
         
         // checks if the user borrowed a book
@@ -591,7 +605,9 @@ void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
             {
                 if (result != 0 && book.id != 0 && book.id == book_ids[i]) 
                 {
-                    printf("\n\t\t\t\t\t%d\t\t\t%s\t\t\t%s\t\t\t\n", book.id, book.title, book.author);
+                    printf("\n\t\t\t\t\t%d%39s%39s\t\t\t\n", book.id, book.title, book.author);
+                    // printf("%d-%d-%d\t%ddays%dhours\n", issuedbook.from_month, issuedbook.from_day -32,
+                    //                                         issuedbook.day_left, issuedbook.from_year + 5, issuedbook.hours_left + 24);
                     puts("\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
                 }
             

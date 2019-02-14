@@ -35,7 +35,7 @@ ISSUEDBOOK issuedbook;
 void addBook(void)
 {
     system("clear");
-    unsigned int book_id;
+    unsigned int book_id; // to hold the id temporarily for verification
 
     // initial book struct
     BOOK book;
@@ -43,11 +43,16 @@ void addBook(void)
     // open the books file
     bookPtr = fopen("books.dat", "a+");
 
-    puts("\v\v\t\t\t\t\t\tAdd Book:");
-    printf("%s", "\n\t\tEnter 0 as book id to exit: \n");
+    puts("\v\t\t\t\t\t\t\t\t````````````````````````````````");
+    puts("\t\t\t\t\t\t\t\t\t   \033[22;34mADD BOOK\033[0m\n");
+    puts("\t\t\t\t\t\t\t\t````````````````````````````````\v\v");
+
+    puts("\v\v\v\v\t\t\t________________________________________________________________________________________\n");
+    printf("%s", "\n\t\t\t N/B:Enter 0 as book id to exit: \n");
+    puts("\t\t\t________________________________________________________________________________________");
 
     // enter id for verification
-    printf("%s", "\v\v\t\tEnter book id: ");
+    printf("%s", "\v\v\t\t\tEnter book id: \t\t->\t");
     scanf("%u", &book_id);
         
     // scan the books records to check if the id exist       
@@ -56,9 +61,11 @@ void addBook(void)
         fread(&book, sizeof(BOOK), 1, bookPtr);
         if (book_id == book.id)
         {
-            puts("\v\t\tError: The book id exists");
+            puts("\v\v\v\v\t\t\t________________________________________________________________________________________");
+            puts("\t\t\t\tError: The book id exists");
+            puts("\t\t\t________________________________________________________________________________________");
             sleep(2);
-            book_id = 0 ;
+            book_id = 0 ; // 
         }
     }
 
@@ -67,23 +74,32 @@ void addBook(void)
     // if book does not exist, enter the records of the new book
     if( book_id != 0 )
     {
+        // initialize book.id with the entered book_id
         book.id = book_id;
 
-        puts("\v\t\tNB:\tMultiple names must be separated using a hyphen(eg c-programming otieno-chris 900)");
-        puts("\t\t---------------------------------------------------------------------------------------------------");
-        printf("%s", "\n\v\t\tEnter title, author and copies (e.g c-programming christopher 100 )\t>\t");
+        puts("\v\v\t\t\t---------------------------------------------------------------------------------------------------");
+        puts("\n\t\t\tNB:\tMultiple names must be separated using a hyphen(eg c-programming otieno-chris 900)");
+        puts("\n\t\t\t---------------------------------------------------------------------------------------------------");
+        printf("%s", "\n\v\t\t\tEnter title, author and copies (e.g c-programming christopher 100 )\t>\t");
 
         scanf("%29s%29s%d", book.title, book.author, &book.copies);
         // write the details of the new book to file
         fwrite(&book, sizeof(BOOK), 1, bookPtr);
+        printf("%s", "\n\v\t\t\tRecords saved successfully\t>\t");
+
     }
+
     fclose(bookPtr); // close the books file
                 
     // navigation: continue or exit
+    puts("\v");
+
     int choice;
-    printf("%s", "\n\t\tEnter 1 to continue or 0 to exit: \n");
-    printf("%s", "\v\t\t(Enter your choice here)->\t");
-    scanf("%d", &choice);
+    puts("\v\v\v\v\v\v\v\t\t\t##########################################################################################");
+    printf("\t\t\tEnter 0 to go back to the main menu (1 to continue)");
+    printf("%s", "\t\t(Enter your choice here)->\t");
+
+    scanf("%u", &choice);
 
     // go back to the same function        
     if (choice == 1)
@@ -95,7 +111,6 @@ void addBook(void)
     {
 
         printf("%s", "\v\t\tloading...\n");
-        sleep(3);
     }
 
 
@@ -105,11 +120,9 @@ void addBook(void)
 // search for a book
 void searchBook(void)
 {
-    system("clear");
-
+    system("clear"); // works on ubuntu (system("cls") on windows)
 
     puts("\v\t\t\t\t\t\t\t\t\t\t````````````````````````");
-    
     puts("\t\t\t\t\t\t\t\t\t\t\t\033[22;34mSEARCH BOOK\033[0m");
     puts("\t\t\t\t\t\t\t\t\t\t........................\v\v\v\v");
     bookPtr = fopen("books.dat", "rb+");
@@ -154,6 +167,9 @@ void searchBook(void)
                         }
 
                 }
+
+                fclose(bookPtr); // close the file
+
                 puts("\v");
                 int choice;
                 puts("\v\v\v\v\v\v\v\t\t\t\t\t\t##########################################################################################");
@@ -191,6 +207,8 @@ void searchBook(void)
                         }
 
                 }
+
+                fclose(bookPtr); // close the file
                 
                 puts("\v");
 
@@ -207,12 +225,7 @@ void searchBook(void)
                 }
 
         }
-
-
-        fclose(bookPtr);
-        // go to the customized view
-
-        }
+    }
 }
 
 // a function that returns all the books' inventory
@@ -233,7 +246,7 @@ void viewBooks(void)
     else
     {
         puts("\t\t\t\t________________________________________________________________________________________________________________________");    
-        puts("\v\t\t\t\t\tBook_id\t\t\tTitle\t\t\tAuthor\t\t\tCopies");
+        puts("\v\t\t\t\t\tBook_id\t\t\tTitle\t\t\t\tAuthor\t\t\tCopies");
         puts("\t\t\t\t________________________________________________________________________________________________________________________");
         
 
@@ -243,7 +256,7 @@ void viewBooks(void)
             int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
             if(result != 0 && book.id != 0)
             {
-                printf("\n\t\t\t\t\t%d\t\t\t%s\t\t\t%s\t\t\t%d\n", book.id, book.title, book.author, book.copies);
+                printf("\n\t\t\t\t %10d%30s%30s%20d\n", book.id, book.title, book.author, book.copies);
                 puts("\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
             }
         }
@@ -269,16 +282,15 @@ void viewBooks(void)
 void issueBook(void)
 {
     system("clear");
-    int TRU = 0, FOLS = 1;
-    int x = FOLS, y = FOLS; //stop = FOLS; // variable to control the flow of execution of command
+    int TRU = 0, FOLS = 1; // variable to control entry into loops or functions
+    int x = FOLS, y = FOLS;; // variable to control the flow of execution of command
     unsigned int student_id, book_id;
-    // char title[30], fname[30];
 
-    bookPtr = fopen("books.dat","rb+");
-    studentPtr = fopen("student.dat", "rb+");
-    issuedBookPtr = fopen("issuedBook.dat", "a+");
-    puts("\v\t\t\t\t\t````````````````````````");
+    bookPtr = fopen("books.dat","rb+"); // contains books' info
+    studentPtr = fopen("student.dat", "rb+"); // contains students' info
+    issuedBookPtr = fopen("issuedBook.dat", "a+"); // contains issued books' info
     
+    puts("\v\t\t\t\t\t````````````````````````");
     puts("\t\t\t\t\t\t\033[22;34mISSUE BOOK\033[0m");
     puts("\t\t\t\t\t........................\v\v\v\v");
 
@@ -291,19 +303,21 @@ void issueBook(void)
     else
     {
         // checks if the book exists
-                // x = FOLS;
         printf("%s","\v\v\t\tEnter student id\t\t\t\t->\t");
         scanf("%d", &student_id);
-        
+        int invalid_entry = 'n'; // to check for zero id
+        if(student_id == 0)
+        {
+            invalid_entry = 'y';
+        }
 
 
         // executes when the book exists
-        while (!feof(studentPtr))
+        while (!feof(studentPtr) && invalid_entry == 'n')
         {
             int result2 = fread(&student, sizeof(STUDENT), 1, studentPtr);
             if(result2 != 0 && student.id == student_id)
                 {
-                    // char fname[30] = student.fname;
                     puts("\v\v\t\t______________________________________\n");
                     puts("\t\tproceed, the student id exist");
                     puts("\t\t______________________________________\v\v");
@@ -312,11 +326,26 @@ void issueBook(void)
             
         }
 
-        while (y == TRU)
+        // number of books borrowed
+        int count = 0;
+        char dont_issue = 'n';
+        while(!feof(issuedBookPtr) && invalid_entry == 'n'){
+            ISSUEDBOOK issuedbook;
+            int result = fread(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
+            if (result != 0 && issuedbook.student_id == student_id) {
+                count += result;
+            }
+            if (count >= 3) {
+                dont_issue = 'y';
+            }
+            
+        }
+        
+
+        while (y == TRU && count < 3)
         {   
             y = FOLS; // to stop the loop
             printf("%s", "\v\v\t\tEnter id of the book to issue\t\t\t->\t");
-            // printf("%s", "\t\t(Enter the id here)->\t");                
             scanf("%u", &book_id);
 
 
@@ -342,6 +371,7 @@ void issueBook(void)
                     printf("\v\t\tOld record -> \t%-6d%-16s%-11s%u\n", book.id, book.title, 
                             book.author, book.copies);
 
+                    // books with less than 1 copies cant be issued
                     if (book.copies > 0) 
                     {
                         
@@ -355,8 +385,7 @@ void issueBook(void)
 
                         // change the records
                         fwrite(&book, sizeof(BOOK), 1, bookPtr);
-                        printf("\t\tNew record -> \t%-6d%-16s%-11s%u\n", book.id, book.title, 
-                            book.author, book.copies);
+                        printf("\t\tNew record -> \t%-6d%-16s%-11s%u\n", book.id, book.title,book.author, book.copies); 
                         puts("\v\t\t____________________________________________________________________");
                         
 
@@ -371,22 +400,35 @@ void issueBook(void)
             if(stop == 'n'){
                 puts("\v\v\v\v\t\t\t\tOops! The book is out of stock!!!");
             }
-        }
 
-        // executes when the student exists
+            
+        }
+        if (dont_issue == 'y') {
+            puts("\v\v\t\t____________________________________________________________________");
+            printf("\t\t\tError: Can not issue more than three books!");
+            puts("\n\t\t____________________________________________________________________");
+        }
+        if (invalid_entry == 'y') {
+            puts("\v\v\t\t____________________________________________________________________");
+            printf("\n\t\t\tError: Invalid id (id of 0 is not allowed)!\n");
+            puts("\t\t____________________________________________________________________");
+        }
+        
+
+        // executes when the student exists; writes to the issued books' record
         if(x == TRU && y == FOLS )
         {
+
             puts("\v\v\t\t\tstoring the data..\v");
             sleep(1);
             issuedbook.student_id = student_id;
-            // issuedbook.fname = student.fname;
             issuedbook.book_id = book_id;
-            // issuedbook.title = book.title; 
             fwrite(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
 
-            // x = FOLS; // just to demonstrate that x changed
-            
         }
+        fclose(bookPtr);
+        fclose(studentPtr);
+        fclose(issuedBookPtr);
     
         
 
@@ -402,11 +444,7 @@ void issueBook(void)
             issueBook();
         }
 
-        fclose(bookPtr);
-        fclose(studentPtr);
-        fclose(issuedBookPtr);
     
-        // menu(); // got to the customized view of the librarian
 
     }
 }
@@ -415,12 +453,12 @@ void issueBook(void)
 void viewIssuedBook(void)
 {
     system("clear"); // works only on ubuntu
-    puts("\v\t\t\t\t\t\t\t\t```````````````````````````````````");
     
+    puts("\v\t\t\t\t\t\t\t\t```````````````````````````````````");
     printf("%s","\t\t\t\t\t\t\t\t\t\033[22;34mLIST OF ISSUED BOOKS\033[0m\n");
     puts("\t\t\t\t\t\t\t\t```````````````````````````````````\v\v\v");
 
-    issuedBookPtr = fopen("issuedBook.dat", "rb");
+    issuedBookPtr = fopen("issuedBook.dat", "rb+");
 
     if (issuedBookPtr == NULL)
     {
@@ -429,21 +467,22 @@ void viewIssuedBook(void)
     else
     {
     
-        puts("\v\t\t\t\t\t\t\t\tStudent_id\t\tBook_id");
-        puts("\t\t\t\t\t\t\t\t___________________________________\n");
+        puts("\v\t\t\t\t\t\t\t\tStudent_id\t\t\tBook_id");
+        puts("\t\t\t\t\t\t\t\t_________________________________________\n");
 
         while (!feof(issuedBookPtr))
         {
             int  result = fread(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
             if(result != 0 && issuedbook.student_id != 0)
             {
-                printf("\t\t\t\t\t\t\t\t  %d  \t\t\t %d\n", issuedbook.student_id, issuedbook.book_id);
-                puts("\t\t\t\t\t\t\t\t```````````````````````````````````");
+
+                printf("\t\t\t\t\t\t\t\t  %d  \t\t\t %d\t\n", issuedbook.student_id, issuedbook.book_id);
+                puts("\t\t\t\t\t\t\t\t`````````````````````````````````````````\n");
         
             }
         }
 
-        fclose(bookPtr);
+        fclose(issuedBookPtr);
 
         puts("\v");
         int choice;
@@ -471,8 +510,8 @@ void updateBook(void)
     int count = 0; // to keep track of the record currently read
     char stop = 'n'; // to halt the loop when the record is found
 
-    puts("\v\t\t\t\t\t\t\t``````````````````````````````````");
     
+    puts("\v\t\t\t\t\t\t\t``````````````````````````````````");
     puts("\t\t\t\t\t\t\t\t\033[22;34mUPDATE BOOK\033[0m");
     puts("\t\t\t\t\t\t\t``````````````````````````````````");
 
@@ -554,14 +593,14 @@ void updateBook(void)
 void deleteBook(void)
 {
     system("clear"); // on windows system("cls");
-    bookPtr = fopen("books.dat", "rb+");
-    issuedBookPtr = fopen("issuedBook.dat", "rb+");
+    bookPtr = fopen("books.dat", "rb+"); // contains the books' info
+    issuedBookPtr = fopen("issuedBook.dat", "rb+"); // contains the issued books' info
 
 
     int count = 0; // to keep track of the record currently read
     char stop = 'n'; // to halt the loop when the record is found
-    puts("\v\t\t\t\t\t\t\t\t````````````````````````````````");
     
+    puts("\v\t\t\t\t\t\t\t\t````````````````````````````````");
     puts("\t\t\t\t\t\t\t\t\t\033[22;34mDELETE BOOK\033[0m");
     puts("\t\t\t\t\t\t\t\t````````````````````````````````\v\v");
 
@@ -570,7 +609,7 @@ void deleteBook(void)
     unsigned int book_id;
     scanf("%u", &book_id);
 
-
+    // to check for the existence of the book id
     while (!feof(bookPtr) && stop == 'n')
     {
 
@@ -582,7 +621,7 @@ void deleteBook(void)
         {
             stop = 'y'; // the id exists
 
-            // to ensure borrowed book is not deleted
+            // to ensure borrowed book is not deleted by checking if its borrowed
             while(!feof(issuedBookPtr) && del == 0)
             {
                 ISSUEDBOOK issuedbook;
@@ -592,15 +631,14 @@ void deleteBook(void)
                         puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________");
                         puts("\n\t\t\t\t\t\tError: Record of borrowed books can not be deleted until returned");
                         puts("\t\t\t\t\t________________________________________________________________________________________");
-                        del = 1;
+                        del = 1; // initializes the del to false (cant be deleted)
                     }
             }
             
             // if not borrowed then delete
-            while(del == 0 )
+            if(del == 0 )
             {
                 
-                del = 1; // to terminate the loop
                 // set cursor at the begining of the record 
                 fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
                 puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________\n");
@@ -612,7 +650,8 @@ void deleteBook(void)
                 printf("\v\v\v\t\t\t\t\tConfirm deletion by entering 1 otherwise 0 (then press enter key)\t\t ->\t");
                 scanf("%d", &confirm);
                 if (confirm == 1) 
-                {    
+                {
+                    // seta blank record to overwrite the record    
                     BOOK blankbook = {0, 0 ,"", ""};
 
                     // set cursor at the begining of the record 
@@ -638,11 +677,11 @@ void deleteBook(void)
     }
 
     // variable stop does not change if the book does not exist
-    while(stop == 'n'){
+    if(stop == 'n')
+    {
         puts("\v\v\v\v\t\t\t\t\t________________________________________________________________\n");
         puts("\t\t\t\t\t\t\tError: The book id does not exist!");
         puts("\t\t\t\t\t________________________________________________________________");
-        stop = 'y'; // terminate the loop
     }
     
     rewind(bookPtr); // returns the cursor to the begining of the file 
@@ -655,8 +694,7 @@ void deleteBook(void)
 
     if (choice == 0)
     {
-        // this goes to the customized view of the librabrian
-        // menu();
+        // this goes to the customized view of the librabrian by exiting this program
     }
     else
     {
@@ -669,7 +707,9 @@ void returnBook(void)
 {
     system("clear");
 
-    puts("\v\t\tRETURN BOOK:\v\v\v\v");
+    puts("\v\t\t\t\t\t\t\t\t````````````````````````````````");
+    puts("\t\t\t\t\t\t\t\t\t   \033[22;34mRETURN BOOK\033[0m\n");
+    puts("\t\t\t\t\t\t\t\t````````````````````````````````\v\v");
     
     issuedBookPtr = fopen("issuedBook.dat", "rb+");
     bookPtr = fopen("books.dat","rb+");
@@ -691,7 +731,7 @@ void returnBook(void)
 
         // delete record from issuedbook list
         int count = 0; // keep track of the record number scanned
-        while(!feof(issuedBookPtr))
+        while(!feof(issuedBookPtr) && tru == 'y')
         {
 
             ISSUEDBOOK issuedbook;
@@ -701,7 +741,7 @@ void returnBook(void)
 
             if (result != 0 && book_id == issuedbook.book_id && student_id == issuedbook.student_id ) 
             {   
-                tru = 'n'; // changed when record exists
+                tru = 'n'; // to ensure that only one record is modified each time a return occurs
                 fseek(issuedBookPtr, (count - 1)*sizeof(ISSUEDBOOK), SEEK_SET );
                 ISSUEDBOOK blankbook = { 0, 0};
                 fseek(issuedBookPtr, (count - 1)*sizeof(ISSUEDBOOK), SEEK_SET );
@@ -738,24 +778,32 @@ void returnBook(void)
         fclose(bookPtr);
 
         if (tru == 'n' && fols == 'n') {
-            puts("\v\v\t\t\tThe records are successfully updated");
+            puts("\v\v\v\v\t\t\t________________________________________________________________________________________\n");
+            puts("\t\t\t\tThe records are successfully updated");
+            puts("\t\t\t________________________________________________________________________________________");
+
         }
         else if (tru == 'n' && fols == 'y')
         {
-            puts("\v\v\t\t\tError: The book id does not exist");
+            puts("\v\v\v\v\t\t\t________________________________________________________________________________________\n");
+            puts("\t\t\t\tError: The book id does not exist");
+            puts("\t\t\t________________________________________________________________________________________");
         }
         else if (tru == 'y' && fols == 'n' )
         {
-            puts("\v\v\t\t\tError: The records does not exist in the issued books");
+            puts("\v\v\v\v\t\t\t________________________________________________________________________________________\n");
+            puts("\t\t\t\tError: The records does not exist in the issued books");
+            puts("\t\t\t________________________________________________________________________________________");
         }
         else
         {
-            puts("\v\v\t\t\tOops! The system has no records on this book and its lease");
+            puts("\v\v\v\v\t\t\t________________________________________________________________________________________\n");
+            puts("\t\t\t\tOops! The system has no records on this book and its lease");
+            puts("\t\t\t________________________________________________________________________________________");
         }
 
         sleep(3);
-        // this goes to the customized view of the librabrian
-        // menu();
+        
     }
 }
 
