@@ -25,7 +25,7 @@ typedef struct
 void menu(void);
 
 //  global pointers
-FILE *bookPtr, *studentPtr, *userPtr, *issuedBookPtr;
+FILE *bookPtr = NULL, *studentPtr = NULL, *userPtr = NULL , *issuedBookPtr = NULL;
 
 // global struct declaration
 STUDENT student;
