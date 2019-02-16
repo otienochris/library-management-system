@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <time.h>
 
+void suggestBook(void);
+
+
 // struct used to store issuedbook info
 typedef struct
 {
@@ -134,12 +137,14 @@ void searchBook(void)
     else
     {
         unsigned int search_id;
-        char search_title[30];
+        char search_title[30], done_search = 'n';
         int choice;
 
         printf("%s", "\v\t\t\t\t\t\t________________________________________________________________________________________\n\n"
                 "\t\t\t\t\t\t\t|1| Search by title\t\t<-- or -->\t\t|2| Search by id\n"
                 "\t\t\t\t\t\t________________________________________________________________________________________\n"
+                "\n\t\t\t\t\t\t\t\t|3|Not sure of the book title or id? get suggestions "
+                "\n\t\t\t\t\t\t________________________________________________________________________________________\n"
                 );
         printf("%s", "\v\v\t\t\t\t\t\t(Enter your choice here)\t\t\t\t->\t");
 
@@ -149,40 +154,39 @@ void searchBook(void)
             case 1:
 
                 printf("%s","\v\v\n\t\t\t\t\t\tEnter the title of the book to search:\t\t\t->\t");
-                // printf("%s", "\v\t\t(Enter the title here)->\t");
                 scanf("%29s", search_title);
 
                 printf("%s","\v\v\t\t\t\t\t\tid\tTitle\t\t\t\tAuthor\t\t\t\tCopies\n");            
                 puts("\t\t\t\t\t\t________________________________________________________________________________________\v");
 
-                while (!feof(bookPtr))
+                while ( !feof(bookPtr) && done_search == 'n')
                 {
                     BOOK book;
                     int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
-                    
-                    if ((strcmp(book.title, search_title)==0) && (result != 0) )
+
+                   // searches a book that has a title containing the title entered 
+                    if ( (strcmp(book.title, search_title) == 0) && (result != 0) )
                         {
-                        printf("\t\t\t\t\t\t%d\t%s\t\t\t\t%s\t\t\t\t%d\n", book.id, book.title, book.author, book.copies);
-                        puts("\v\t\t\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````");
+                        
+                            printf("\t\t\t\t\t\t%d\t%s\t\t\t\t%s\t\t\t\t%d\n", book.id, book.title, book.author, book.copies);
+                            puts("\v\t\t\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````");
+
+                            // if copies are zero then provide suggestion by title or author of other books in the lib
+                            if (book.copies == 0) 
+                            {
+                                int choice;
+                                printf("\v\v\t\t\t\t\t\t Enter 1 to get suggestion or 0 to continue\t\t->\t");
+                                scanf("%d", &choice);
+                                fflush(stdin);
+                                if (choice == 1) 
+                                    suggestBook();
+                                
+                            }
+                            done_search = 'y';                          
                         }
-
                 }
-
+                        
                 fclose(bookPtr); // close the file
-
-                puts("\v");
-                int choice;
-                puts("\v\v\v\v\v\v\v\t\t\t\t\t\t##########################################################################################");
-                printf("\t\t\t\t\t\tEnter 0 to go back to the main menu");
-                printf("%s", "\t\t(Enter your choice here)->\t");
-
-                scanf("%d", &choice);
-
-                if (choice == 0)
-                {
-                    // go to the customized view
-                }
-                
                 
                 break;
 
@@ -195,21 +199,41 @@ void searchBook(void)
                 printf("%s","\v\v\t\t\t\t\t\tid\tTitle\t\t\t\tAuthor\t\t\t\tCopies\n");            
                 puts("\t\t\t\t\t\t________________________________________________________________________________________\v");
                     
-                while (!feof(bookPtr))
+                while (!feof(bookPtr) && done_search == 'n')
                 {
                     BOOK book;
                     int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
                     if ( (result != 0) &&  book.id == search_id  )
                         {
-                        printf("\t\t\t\t\t\t%d\t%s\t\t\t\t%s\t\t\t\t%d\n", book.id, book.title, book.author, book.copies);
-                        
-                        puts("\v\t\t\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````");
+                            printf("\t\t\t\t\t\t%d\t%s\t\t\t\t%s\t\t\t\t%d\n", book.id, book.title, book.author, book.copies);
+                            
+                            puts("\v\t\t\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````");
+
+                             // if copies are zero then provide suggestion by title or author of other books in the lib
+                            if (book.copies == 0) 
+                            {
+                                int choice;
+                                printf("\v\v\t\t\t\t\t\t Enter 1 to get suggestion or 0 to continue\t\t->\t");
+                                scanf("%d", &choice);
+                                fflush(stdin);
+                                if (choice == 1) 
+                                    suggestBook();
+                                
+                            };
+                            done_search = 'y';
                         }
 
                 }
 
                 fclose(bookPtr); // close the file
-                
+                break;
+            case 3:
+                // a function that suggest for a book using few key characters
+                suggestBook();
+                break;
+
+
+        }
                 puts("\v");
 
                 int choice2;
@@ -223,8 +247,6 @@ void searchBook(void)
                 {
                     // go to the customized view                    
                 }
-
-        }
     }
 }
 
@@ -807,3 +829,97 @@ void returnBook(void)
     }
 }
 
+/* a function that uses a subset of a characters within the book title or
+ author to suggestions of possible available books to search or borrow*/
+void suggestBook(void)
+{
+    system("clear");
+
+    puts("\v\t\t\t\t\t\t\t\t\t\t```````````````````````````");
+    puts("\t\t\t\t\t\t\t\t\t\t\t\033[22;34mSUGGEST BOOK\033[0m");
+    puts("\t\t\t\t\t\t\t\t\t\t...........................\v\v\v\v");
+
+    bookPtr = fopen("books.dat", "rb+");
+    if (bookPtr == NULL)
+        printf("Error: Could not open the books file");
+    else
+    {
+        int choice;
+        
+        printf("%s", "\v\t\t\t\t\t\t________________________________________________________________________________________\n\n"
+                "\t\t\t\t\t\t\t|1| Suggest by Author\t\t<-- or -->\t\t|2| Suggest by Title\n"
+                "\t\t\t\t\t\t________________________________________________________________________________________\n"
+                );
+        printf("%s", "\v\v\t\t\t\t\t\t(Enter your choice here)\t\t\t\t->\t");
+
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1:
+                printf("\v\v\t\t\t\t\t\tEnter the Author\t\t\t\t\t->\t");
+                char author[40], books_found = 'n';
+                scanf("%39s", author);
+                
+
+                puts("\v\v"); //just to do add vertical tab
+                puts("\t\t\t\t________________________________________________________________________________________________________________________");    
+                puts("\v\t\t\t\t\tBook_id\t\t\tTitle\t\t\t\tAuthor\t\t\tCopies");
+                puts("\t\t\t\t________________________________________________________________________________________________________________________");
+                // lists the info of books that has been written by the entered author
+                while (!feof(bookPtr))
+                    {   
+                        BOOK book;
+                        int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
+                        if(result != 0 && book.id != 0 && strstr(book.author, author) != NULL)
+                        {
+                            printf("\n\t\t\t\t %10d%30s%30s%20d\n", book.id, book.title, book.author, book.copies);
+                            puts("\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
+                            books_found = 'y'; 
+                        }
+                    }
+                    puts("\v\t\t\t\t________________________________________________________________________________________________________________________");
+                    
+                    if (books_found == 'n')
+                            puts("\n\t\t\t\tOops! Could not get a suggestion from our databases");
+                    
+                    fclose(bookPtr);
+                    break;
+                
+            case 2:
+                printf("\v\v\t\t\t\t\t\tEnter the Title\t\t\t\t\t\t->\t");
+                char title[40], books_found2 = 'n' ;
+                scanf("%39s", title);
+
+                puts("\v\v"); //just to do add vertical tab
+                puts("\t\t\t\t________________________________________________________________________________________________________________________");    
+                puts("\v\t\t\t\t\tBook_id\t\t\tTitle\t\t\t\tAuthor\t\t\tCopies");
+                puts("\t\t\t\t________________________________________________________________________________________________________________________");
+
+                // lists the info of books that contains the entered title
+                while (!feof(bookPtr))
+                    {   
+                        BOOK book;
+                        int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
+                        if(result != 0 && book.id != 0 && strstr(book.title, title) != NULL)
+                        {
+                            printf("\n\t\t\t\t %10d%30s%30s%20d\n", book.id, book.title, book.author, book.copies);
+                            puts("\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
+                            books_found2 = 'y';
+                        }
+                    }
+                    puts("\v\t\t\t\t________________________________________________________________________________________________________________________");
+                if (books_found2 == 'n')
+                    puts("\n\t\t\t\t\t\tOops! Could not get a suggestion from our databases");
+
+                break;
+                
+                
+
+            default:
+                // user();
+                break;
+        }
+
+    }
+}

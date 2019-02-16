@@ -195,14 +195,14 @@ void login(void)
                     printf("\t\t\t_______________________________________________________________________________________________\n\n");
 
                     sleep(3);
-                    main();
+                    login();
                 }
             fclose(studentPtr);
             
             }
             break;
         default:
-            main();
+            login();
             break;
     }
 
@@ -271,9 +271,9 @@ void time2(void)
 {
     time_t t = time(NULL);
         struct tm tm = *localtime(&t);
-        printf("\v\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tTime is: %d:%d:%d\ton: %d-%d-%d \n", 
+        printf("\v\t\t\t\t\t\t\t\t\tTime is: %d:%d:%d\ton: %d-%d-%d \n", 
             tm.tm_hour, tm.tm_min, tm.tm_sec,
-            tm.tm_mday, tm.tm_mon,tm.tm_year + 1900);
+            tm.tm_mday, tm.tm_mon + 1,tm.tm_year + 1900);
 }
 
 // admin view 
@@ -442,7 +442,7 @@ void addAdmin(void)
             scanf("%39s%39s", admin.fname, admin.lname);
             strcpy(admin.username,user_name);
 
-            printf("\v\v\t\t\tEnter the username and passworsd (eg chrisly s13/09426@17)\t->\t");
+            printf("\v\v\t\t\tEnter the passworsd (eg chrisly s13/09426@17)\t->\t");
             scanf("%59s", admin.password);
 
             fwrite(&admin, sizeof(ADMIN), 1, userPtr);
@@ -476,7 +476,8 @@ void viewAdmin(void)
             // puts("was here");
             ADMIN admin;
             int result = fread(&admin, sizeof(ADMIN), 1, userPtr);
-            if (result != 0 && strcmp(admin.fname, "") != 0) {
+            if (result != 0 && strcmp(admin.fname, "") != 0) 
+            {
                 printf("\t\t\t\t %30s%30s%30s\n", admin.fname, admin.lname, admin.username);
                 puts("\t\t\t\t\t\t`````````````````````````````````````````````````````````````````````````````````````````````````");
 
@@ -576,3 +577,4 @@ void deleteAdmin(void)
         }
     }
 }
+
