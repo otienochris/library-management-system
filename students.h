@@ -580,7 +580,7 @@ void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
         puts("\t\t\t\t\t\t___________________________________________________________________________________");    
 
 
-    }0
+    }
             
     fclose(bookPtr);
     fclose(studentPtr);
