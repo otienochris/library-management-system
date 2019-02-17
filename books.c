@@ -2,18 +2,26 @@
 #include <time.h>
 
 void suggestBook(void);
+void boro_return_date(int day, int month, int year, int *r_d, int *r_m, int *r_y);
+
+typedef struct 
+{
+    int b_day, b_month, b_year; // borrowed day,month,year
+    int r_day, r_month, r_year; // return day,month,year
+}DATE;
 
 
 // struct used to store issuedbook info
 typedef struct
 {
     unsigned int student_id, book_id;
+    DATE date;
 } ISSUEDBOOK;
 
 // struct to store book info
 typedef struct
 {
-    unsigned int id, copies;
+    unsigned int id, copies, rack;
     char title[30], author[30];
 } BOOK;
 
@@ -27,7 +35,7 @@ typedef struct
 
 void menu(void);
 
-//  global pointers
+//  global pointers (set to null to avoid segmentation faults)
 FILE *bookPtr = NULL, *studentPtr = NULL, *userPtr = NULL , *issuedBookPtr = NULL;
 
 // global struct declaration
@@ -83,9 +91,9 @@ void addBook(void)
         puts("\v\v\t\t\t---------------------------------------------------------------------------------------------------");
         puts("\n\t\t\tNB:\tMultiple names must be separated using a hyphen(eg c-programming otieno-chris 900)");
         puts("\n\t\t\t---------------------------------------------------------------------------------------------------");
-        printf("%s", "\n\v\t\t\tEnter title, author and copies (e.g c-programming christopher 100 )\t>\t");
+        printf("%s", "\n\v\t\t\tEnter title, author, copies and rack_no. (e.g c-programming christopher 100 )\t>\t");
 
-        scanf("%29s%29s%d", book.title, book.author, &book.copies);
+        scanf("%29s%29s%u%u", book.title, book.author, &book.copies, &book.rack);
         // write the details of the new book to file
         fwrite(&book, sizeof(BOOK), 1, bookPtr);
         printf("%s", "\n\v\t\t\tRecords saved successfully\t>\t");
@@ -268,7 +276,7 @@ void viewBooks(void)
     else
     {
         puts("\t\t\t\t________________________________________________________________________________________________________________________");    
-        puts("\v\t\t\t\t\tBook_id\t\t\tTitle\t\t\t\tAuthor\t\t\tCopies");
+        puts("\v\t\t\t\t  Book_id\t\t\tTitle\t\t\t\tAuthor\t\t\tCopies\t\tRack_no.");
         puts("\t\t\t\t________________________________________________________________________________________________________________________");
         
 
@@ -278,7 +286,7 @@ void viewBooks(void)
             int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
             if(result != 0 && book.id != 0)
             {
-                printf("\n\t\t\t\t %10d%30s%30s%20d\n", book.id, book.title, book.author, book.copies);
+                printf("\n\t\t\t\t %10d%30s%30s%20d%15d\n", book.id, book.title, book.author, book.copies, book.rack);
                 puts("\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
             }
         }
@@ -324,6 +332,26 @@ void issueBook(void)
     // executes when file is open
     else
     {
+        // time 
+
+        int leapYear (int year);
+
+        // struct containing the time members
+        time_t t = time(NULL);
+        struct tm tm = *localtime(&t);
+
+        // the current and future time variables
+        int day = tm.tm_mday, 
+            month = tm.tm_mon + 1, 
+            year = tm.tm_year + 1900
+            ;
+        
+        // displaying current date of the system
+        printf("\nCurrent Date: %d/%d/%d", day, month, year);
+
+
+
+
         // checks if the book exists
         printf("%s","\v\v\t\tEnter student id\t\t\t\t->\t");
         scanf("%d", &student_id);
@@ -348,7 +376,7 @@ void issueBook(void)
             
         }
 
-        // number of books borrowed
+        // number of books borrowed (cant issue more than three books)
         int count = 0;
         char dont_issue = 'n';
         while(!feof(issuedBookPtr) && invalid_entry == 'n'){
@@ -440,11 +468,32 @@ void issueBook(void)
         // executes when the student exists; writes to the issued books' record
         if(x == TRU && y == FOLS )
         {
+            ISSUEDBOOK issuedbook;
+
+            // struct containing the time members
+            time_t t = time(NULL);
+            struct tm tm = *localtime(&t);
+
+            // the current and future time variables
+            issuedbook.date.b_day = tm.tm_mday, 
+            issuedbook.date.b_month = tm.tm_mon + 1, 
+            issuedbook.date.b_year = tm.tm_year + 1900
+            ;
+                
+            issuedbook.date.r_day = 0, 
+            issuedbook.date.r_month = 0, 
+            issuedbook.date.r_year = 0
+            ;
+
+            //
+            boro_return_date(issuedbook.date.b_day, issuedbook.date.b_month, issuedbook.date.b_year,
+                            &issuedbook.date.r_day, &issuedbook.date.r_month, &issuedbook.date.r_year);
 
             puts("\v\v\t\t\tstoring the data..\v");
             sleep(1);
             issuedbook.student_id = student_id;
             issuedbook.book_id = book_id;
+
             fwrite(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
 
         }
@@ -489,8 +538,8 @@ void viewIssuedBook(void)
     else
     {
     
-        puts("\v\t\t\t\t\t\t\t\tStudent_id\t\t\tBook_id");
-        puts("\t\t\t\t\t\t\t\t_________________________________________\n");
+        puts("\v\t\t\t\t\tStudent_id\tBook_id\t\tFrom\t\t  To");
+        puts("\t\t\t\t\t________________________________________________________________________________\n");
 
         while (!feof(issuedBookPtr))
         {
@@ -498,9 +547,10 @@ void viewIssuedBook(void)
             if(result != 0 && issuedbook.student_id != 0)
             {
 
-                printf("\t\t\t\t\t\t\t\t  %d  \t\t\t %d\t\n", issuedbook.student_id, issuedbook.book_id);
-                puts("\t\t\t\t\t\t\t\t`````````````````````````````````````````\n");
-        
+                printf("\t\t\t\t\t%10d%10d", issuedbook.student_id, issuedbook.book_id);
+                printf("\t\t%2d/%2d/%4d",issuedbook.date.b_day,issuedbook.date.b_month,issuedbook.date.b_year);
+                printf("\t%2d/%2d/%4d\n",issuedbook.date.r_day, issuedbook.date.r_month, issuedbook.date.r_year);
+                puts("\t\t\t\t\t`````````````````````````````````````````````````````````````````````````````````\n");
             }
         }
 
@@ -560,12 +610,13 @@ void updateBook(void)
                     book.author, book.copies);
             puts("\t\t\t\t\t_________________________________________________________________\v");
 
-            printf("%s", "\v\v\t\t\t\t\tEnter the new title, author and copies (eg c-program chris-o 98)\n\t\t\t\t\t -> \t");
+            printf("%s", "\v\v\t\t\t\t\tEnter the new title, author, rack_no. and copies (eg c-program chris-o 98)\n\t\t\t\t\t -> \t");
             scanf("%29s%29s",book.title, book.author);
 
-            unsigned int copies;
-            scanf("%u", &copies);
+            unsigned int copies, rack;
+            scanf("%u%u", &rack, &copies);
             book.copies = copies;
+            book.rack = rack;
 
             // set cursor at the begining of the record 
             fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
@@ -674,7 +725,7 @@ void deleteBook(void)
                 if (confirm == 1) 
                 {
                     // seta blank record to overwrite the record    
-                    BOOK blankbook = {0, 0 ,"", ""};
+                    BOOK blankbook = {0, 0, 0,"", ""};
 
                     // set cursor at the begining of the record 
                     fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
@@ -765,7 +816,7 @@ void returnBook(void)
             {   
                 tru = 'n'; // to ensure that only one record is modified each time a return occurs
                 fseek(issuedBookPtr, (count - 1)*sizeof(ISSUEDBOOK), SEEK_SET );
-                ISSUEDBOOK blankbook = { 0, 0};
+                ISSUEDBOOK blankbook = { 0,0,{0,0,0,0,0,0}};
                 fseek(issuedBookPtr, (count - 1)*sizeof(ISSUEDBOOK), SEEK_SET );
                 fwrite(&blankbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
             }

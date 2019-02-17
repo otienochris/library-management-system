@@ -31,6 +31,9 @@ void login (void);
 void addAdmin(void);
 void viewAdmin(void);
 void deleteAdmin(void);
+int leap_year(int year);
+void boro_return_date(int day, int month, int year, 
+                        int *r_d, int *r_m, int *r_y);
 
 // main function: the program starts executing here
 int main (void) 
@@ -578,3 +581,61 @@ void deleteAdmin(void)
     }
 }
 
+void boro_return_date(int day, int month ,int year ,int *r_d, int *r_m, int *r_y)
+{
+    // int max_days = 14;// maximum days a student can have a book
+
+    int month_days[12] = {31,28,31,30,31,30,31,31,30,31,30,31};// number of days of months chronologically
+    
+    // loop to increment date upto max_days
+    for(int i = 0; i < 14; i++)
+    {
+        // increment date
+        day++;
+        *r_d = day; // return day
+
+        // assign return year to current year
+        *r_y = year; // return year
+
+        
+        /* 
+            check if days are beyond the days of the month
+            check if the month is feb
+            check if the year is a leap year
+            month-1 gives the index of the current month days in the array
+         */
+
+        
+        if (day > month_days[month - 1] || (month == 2 && day == 29 && !leap_year(year))) 
+        {
+            // go to first day of a month
+            day = 1;
+            *r_d = day; // return day
+
+            // go to the next month
+            month++;
+            *r_m = month; // return month
+
+            // go to the next year if month is 13
+            if(month == 13)
+            {
+                // go the first month
+                month = 1 ;
+                *r_m = month; // return month
+
+                // increment year
+                year++;
+                *r_y = year; // return year
+            }
+        }
+    }
+}
+
+// a function to calculate and check for a leap year
+int leap_year(int year)
+{
+    if ( year % 4 == 0 && ( year % 100 == 0 || year % 400 == 0 ) ) 
+        return 1;
+    else         
+        return 0;
+}
