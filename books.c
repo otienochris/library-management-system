@@ -386,7 +386,7 @@ void issueBook(void)
                 count += result;
             }
             if (count >= 3) {
-                dont_issue = 'y';
+                dont_issue = 'y'; // has three books
             }
             
         }

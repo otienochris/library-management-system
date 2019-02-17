@@ -528,7 +528,7 @@ void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
     {
         
         char student_found = 'n';
-        char book_found = 'n';
+        // char book_found = 'n';
        while (!feof(studentPtr) && student_found == 'n')
         {
             STUDENT student2;
@@ -569,15 +569,12 @@ void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
         puts("\t\t\t\t\t\t\t\t\t\t\033[22;34mBORROWED BOOKS\033[0m\v");
         puts("\t\t\t\t\t\t\t\t\t```````````````````````````````````````` ");
 
-        puts("\v\v\t\t\t\t________________________________________________________________________________________________________________________");    
-        puts("\v\t\t\t\t\tBook_id\t\tTitle\t\t\tAuthor\t\t\t\t\tFrom\t\t  To");
-        puts("\t\t\t\t________________________________________________________________________________________________________________________");
-        
-        unsigned int book_ids[3] = {0, 0, 0}, count = 0; // an array to contain the book ids borrowed
-        // char book_T[40], book_A[40]; // book title and author
+        puts("\v\v\t\t\t\t\t\t___________________________________________________________________________________");    
+        puts("\v\t\t\t\t\t\t\t  Book_id\t\tFrom\t\t  To");
+        puts("\t\t\t\t\t\t___________________________________________________________________________________");    
 
         // checks if the user borrowed a book
-        while(!feof(issuedBookPtr) && book_found == 'n')
+        while(!feof(issuedBookPtr))
         {
             ISSUEDBOOK issuedbook;
             int result = fread(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
@@ -585,48 +582,17 @@ void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
             // checks for matching student id
             if (result != 0 && issuedbook.student_id == id) 
             {
-                book_ids[count] += issuedbook.book_id;
-                ++count;
+                printf("\n\t\t\t\t\t\t\t%10d", issuedbook.book_id);
+                printf("\t\t%2d/%2d/%4d",issuedbook.date.b_day,issuedbook.date.b_month,issuedbook.date.b_year);
+                printf("\t%2d/%2d/%4d\n",issuedbook.date.r_day, issuedbook.date.r_month, issuedbook.date.r_year);
+                puts("\t\t\t\t\t\t````````````````````````````````````````````````````````````````````````````````````");    
             }
-            if (count == 3)
-                book_found = 'y';
         }
-        rewind(issuedBookPtr);
-            
-            
-        
-        // checks for the book records
-        while(!feof(bookPtr) )
-        {
-            BOOK2 book;
-            int result = fread(&book, sizeof(BOOK2), 1, bookPtr);
-            int i;
-            
-            for( i = 0; i < 3; i++)
-            {
-                if (result != 0 && book.id != 0 && book.id == book_ids[i]) 
-                {
-                    printf("\n\t\t\t\t\t%d%s%s\n", book.id, book.title, book.author);
+        puts("\t\t\t\t\t\t___________________________________________________________________________________");    
+        puts("\t\t\t\t\t\t  NB: To view the books details, search using the book id ");
+        puts("\t\t\t\t\t\t___________________________________________________________________________________");    
 
-                    // // get the date information
-                    // char date_found = 'n';
-                    // while(!feof(issuedBookPtr) && date_found == 'n')
-                    // {
-                    //     ISSUEDBOOK issuedbook;
-                    //     fread(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
-                    //     if (book.id == issuedbook.book_id) 
-                    //     {
-                    //         date_found = 'y';
-                    //         printf("\t\t%2d/%2d/%4d",issuedbook.date.b_day,issuedbook.date.b_month,issuedbook.date.b_year);
-                    //         printf("\t%2d/%2d/%4d\n",issuedbook.date.r_day, issuedbook.date.r_month, issuedbook.date.r_year);
-                    //     }
-                        
-                    // }
-                    
-                    puts("\n\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
-                }
-            }
-        }
+
     }
             
     fclose(bookPtr);
