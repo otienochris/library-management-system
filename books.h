@@ -164,7 +164,8 @@ void searchBook(void)
                 printf("%s","\v\v\n\t\t\t\t\t\tEnter the title of the book to search:\t\t\t->\t");
                 scanf("%29s", search_title);
 
-                printf("%s","\v\v\t\t\t\t\t\tid\tTitle\t\t\t\tAuthor\t\t\t\tCopies\n");            
+                puts("\v\v\t\t\t\t\t\t________________________________________________________________________________________\v");
+                printf("%s","\t\t\t\t\t\t  id\t\t\tTitle\t\t\t\t  Author\t\tCopies\n");            
                 puts("\t\t\t\t\t\t________________________________________________________________________________________\v");
 
                 while ( !feof(bookPtr) && done_search == 'n')
@@ -176,14 +177,16 @@ void searchBook(void)
                     if ( (strcmp(book.title, search_title) == 0) && (result != 0) )
                         {
                         
-                            printf("\t\t\t\t\t\t%d\t%s\t\t\t\t%s\t\t\t\t%d\n", book.id, book.title, book.author, book.copies);
+                            printf("\t\t\t\t\t%15d\t%30s%30s\t%15d\n", book.id, book.title, book.author, book.copies);
                             puts("\v\t\t\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````");
 
                             // if copies are zero then provide suggestion by title or author of other books in the lib
                             if (book.copies == 0) 
                             {
                                 int choice;
-                                printf("\v\v\t\t\t\t\t\t Enter 1 to get suggestion or 0 to continue\t\t->\t");
+
+                                puts("\v\v\v\t\t\t\t\t\t________________________________________________________________________________________\v");
+                                printf("\t\t\t\t\t\t Enter 1 to get suggestion or 0 to continue\t\t->\t");
                                 scanf("%d", &choice);
                                 fflush(stdin);
                                 if (choice == 1) 
@@ -276,7 +279,7 @@ void viewBooks(void)
     else
     {
         puts("\t\t\t\t________________________________________________________________________________________________________________________");    
-        puts("\v\t\t\t\t  Book_id\t\t\tTitle\t\t\t\tAuthor\t\t\tCopies\t\tRack_no.");
+        puts("\v\t\t\t\t  Book_id\t\t\tTitle\t\t\t\tAuthor\t\t  Copies\t  Rack_no.");
         puts("\t\t\t\t________________________________________________________________________________________________________________________");
         
 
@@ -479,13 +482,14 @@ void issueBook(void)
             issuedbook.date.b_month = tm.tm_mon + 1, 
             issuedbook.date.b_year = tm.tm_year + 1900
             ;
-                
+            
+            // initialize return dates to zero (0)
             issuedbook.date.r_day = 0, 
             issuedbook.date.r_month = 0, 
             issuedbook.date.r_year = 0
             ;
 
-            //
+            // a function to generate the return date
             boro_return_date(issuedbook.date.b_day, issuedbook.date.b_month, issuedbook.date.b_year,
                             &issuedbook.date.r_day, &issuedbook.date.r_month, &issuedbook.date.r_year);
 
@@ -497,14 +501,12 @@ void issueBook(void)
             fwrite(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
 
         }
+        
+        // fclose to close all the opened files to save changes 
         fclose(bookPtr);
         fclose(studentPtr);
         fclose(issuedBookPtr);
     
-        
-
-            
-
         puts("\v\v\v\v\v\v\v\v\v\v\t\t####################################################################");
         int choice;
         printf("%s", "\n\t\tEnter 1 to continue or 0 to exit: \n");
@@ -901,14 +903,14 @@ void suggestBook(void)
                 "\t\t\t\t\t\t\t|1| Suggest by Author\t\t<-- or -->\t\t|2| Suggest by Title\n"
                 "\t\t\t\t\t\t________________________________________________________________________________________\n"
                 );
-        printf("%s", "\v\v\t\t\t\t\t\t(Enter your choice here)\t\t\t\t->\t");
+        printf("%s", "\v\v\t\t\t\t\t\t(Enter your choice here)\t\t\t\t\t->\t");
 
         scanf("%d", &choice);
 
         switch (choice)
         {
             case 1:
-                printf("\v\v\t\t\t\t\t\tEnter the Author\t\t\t\t\t->\t");
+                printf("\v\v\t\t\t\t\t\tEnter the Author (even part of the name works!)\t\t\t->\t");
                 char author[40], books_found = 'n';
                 scanf("%39s", author);
                 
@@ -938,7 +940,7 @@ void suggestBook(void)
                     break;
                 
             case 2:
-                printf("\v\v\t\t\t\t\t\tEnter the Title\t\t\t\t\t\t->\t");
+                printf("\v\v\t\t\t\t\t\tEnter the Title (even part of the title works!)\t\t\t->\t");
                 char title[40], books_found2 = 'n' ;
                 scanf("%39s", title);
 

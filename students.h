@@ -70,42 +70,28 @@ void addStudent(void)
 
             printf("\v\v\t\t\t\t\tEnter the first name and last name\t\t\t->\t");
             scanf("%29s%29s",student2.fname, student2.lname);
-            // puts("\t\tEnter the first name and last name");
-            // printf("%s","\t\t>");
-            
             
             // enter date of birth
             printf("\v\v\t\t\t\t\tEnter your date of birth: day month year (12 12 2019)\t->\t");
             scanf("%d%d%d", &student2.day, &student2.month, &student2.year);
-            // puts("\v\t\tEnter your date of birth: day month year");
-            // printf("%s","\t\t>");
-            // scanf("%d%d%d", &student2.dob.day, &student2.dob.month, &student2.dob.year);
 
             // entry of course information
             printf("\v\v\t\t\t\t\tEnter your faculty, department and course title\t\t->\t");
             scanf("%29s%29s%29s", student2.faculty, student2.department, student2.course_title);
-            // puts("\v\t\tEnter your faculty, department and course title");
-            // printf("%s","\t\t>");
-            // scanf("%29s%29s%29s", student2.course.faculty, student2.course.department, student2.course.course_title);
-
-         /*    while (!feof(studentPtr))
-                {
-                    fread(&student2, sizeof(STUDENT2), 1, studentPtr);
-                    if (student2_id == student2.id)
-                    {
-                        puts("\v\t\tError: The student2 id exists");
-                        student2_id = 0 ;
-                    }
-                } */
+           
+            // use the entered student id 
             student2.id = student2_id;
             if (student2_id != 0) 
             {
                 
+            // write the details to the file
             fwrite(&student2, sizeof( STUDENT2 ), 1, studentPtr);
             student2_id = 0;
             }
 
         }
+
+        // a success message
         if (info == 'y') 
         {
             puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________\n");
@@ -114,24 +100,24 @@ void addStudent(void)
         } 
         fclose(studentPtr);
             
-            puts("\v");
-            
-            int choice;
-            puts("\v\v\v\v\v\v\v\t\t\t\t\t#######################################################################################");
-            printf("\t\t\t\t\t\t  Enter 0 to go back to the main menu (press 1 continue)\t->\t");
-            // printf("%s", "\t\t(Entery goes here)->\t");
+        puts("\v");
+        
+        int choice;
+        puts("\v\v\v\v\v\v\v\t\t\t\t\t#######################################################################################");
+        printf("\t\t\t\t\t\t  Enter 0 to go back to the main menu (press 1 continue)\t->\t");
+        // printf("%s", "\t\t(Entery goes here)->\t");
 
-            scanf("%d", &choice);
+        scanf("%d", &choice);
 
-            if (choice == 0)
-            {
-                // this goes to the customized view of the librabrian
-                // main();
-            }
-            else
-            {
-                addStudent();
-            }
+        if (choice == 0)
+        {
+            // this goes to the customized view of the librabrian
+            // main();
+        }
+        else
+        {
+            addStudent();
+        }
     }
 
 }
@@ -185,7 +171,6 @@ void viewStudents(void)
             if (choice == 0)
             {
                 // this goes to the customized view of the librabrian
-                // menu();
             }
 }
 
@@ -229,11 +214,12 @@ void deleteStudent(void)
         {
             stop = 'y'; // the id exists
 
-            // to ensure that a student2 having a book can not be deleted
+            // to ensure that a student having a book is not to be deleted
             while(!feof(issuedBookPtr))
             {
                 ISSUEDBOOK issuedbook;
 
+                // read the whole (single) record
                 int result = fread(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
                     if (result != 0 && student_id == issuedbook.student_id) {
                         puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________");
@@ -245,7 +231,7 @@ void deleteStudent(void)
             }
             fclose(issuedBookPtr);
             
-            // if student2 having no book the delete
+            // if student has no book then delete their record
             while(del == 0 )
             {
                 
@@ -262,6 +248,7 @@ void deleteStudent(void)
                     ); 
                 puts("\t\t\t\t\t__________________________________________________________________________________________________________________________________________________________________");
             
+                // confirmation message for deletion
                 int confirm;
                 printf("\v\v\v\t\t\t\t\tConfirm deletion by entering 1 otherwise 0 (then press enter key)\t\t ->\t");
                 scanf("%d", &confirm);
@@ -291,7 +278,7 @@ void deleteStudent(void)
 
     }
     rewind(studentPtr); // returns the cursor to the begining of the file 
-    fclose(studentPtr);
+    fclose(studentPtr); // close the students' info file
 
     // variable stop does not change if the book does not exist
     while(stop == 'n'){
@@ -593,7 +580,7 @@ void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
         puts("\t\t\t\t\t\t___________________________________________________________________________________");    
 
 
-    }
+    }0
             
     fclose(bookPtr);
     fclose(studentPtr);

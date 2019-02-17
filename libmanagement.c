@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <time.h> // a header file to obtain system time
 #include <unistd.h> // clear-screen
 #include <string.h>
-#include "books.c"  // contain functions that involves the books
-#include "students.c"  // contains all functions that involve the book
+#include "books.h"  // contain functions that involves the books
+#include "students.h"  // contains all functions that involve the students
 #define SIZE 40
 
 typedef struct
@@ -19,7 +19,7 @@ typedef struct
 typedef struct 
 {
     char fname[40], lname[40], username[40], password[60];
-}   ADMIN;
+} ADMIN;
 
 
 FILE *studentPtr;
@@ -32,8 +32,7 @@ void addAdmin(void);
 void viewAdmin(void);
 void deleteAdmin(void);
 int leap_year(int year);
-void boro_return_date(int day, int month, int year, 
-                        int *r_d, int *r_m, int *r_y);
+void boro_return_date(int day, int month, int year, int *r_d, int *r_m, int *r_y);
 
 // main function: the program starts executing here
 int main (void) 
@@ -476,10 +475,9 @@ void viewAdmin(void)
             puts("\t\t\t\t\t\t\t First_name\t\t  Last_name\t\t      User_name");
             puts("\t\t\t\t\t\t_________________________________________________________________________________________________\v");
         while(!feof(userPtr)){
-            // puts("was here");
             ADMIN admin;
             int result = fread(&admin, sizeof(ADMIN), 1, userPtr);
-            if (result != 0 && strcmp(admin.fname, "") != 0) 
+            if (result != 0 && ((strcmp(admin.fname, "") != 0) || (strcmp(admin.lname, "") != 0) || (strcmp(admin.username, "") != 0))) 
             {
                 printf("\t\t\t\t %30s%30s%30s\n", admin.fname, admin.lname, admin.username);
                 puts("\t\t\t\t\t\t`````````````````````````````````````````````````````````````````````````````````````````````````");
@@ -581,6 +579,7 @@ void deleteAdmin(void)
     }
 }
 
+// generates return date
 void boro_return_date(int day, int month ,int year ,int *r_d, int *r_m, int *r_y)
 {
     // int max_days = 14;// maximum days a student can have a book
@@ -597,14 +596,13 @@ void boro_return_date(int day, int month ,int year ,int *r_d, int *r_m, int *r_y
         // assign return year to current year
         *r_y = year; // return year
 
-        
+
         /* 
             check if days are beyond the days of the month
             check if the month is feb
             check if the year is a leap year
             month-1 gives the index of the current month days in the array
          */
-
         
         if (day > month_days[month - 1] || (month == 2 && day == 29 && !leap_year(year))) 
         {
