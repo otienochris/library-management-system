@@ -5,7 +5,7 @@
 #include <string.h>
 #include "books.h"  // contain functions that involves the books
 #include "students.h"  // contains all functions that involve the students
-#define SIZE 40
+#define SIZE 40 // a global string size
 
 typedef struct
 {
@@ -22,7 +22,7 @@ typedef struct
 } ADMIN;
 
 
-FILE *studentPtr;
+// FILE *studentPtr = NULL;
 
 void menu (void);
 void time2(void);
@@ -79,7 +79,7 @@ int main (void)
             main();
             break;
     
-        default:
+        case 0:
             system("clear");
 
             puts("\v\v\v\v\t\t\t\tjust a second (saving changes)... \n");
@@ -91,6 +91,9 @@ int main (void)
             system("clear");
             // exit the program
             exit(1);
+            break;
+        default:
+            main();
             break;
     }     
 }
@@ -156,7 +159,7 @@ void login(void)
                     printf("\t\t\t\tError: Wrong cridentials. \n");
                     printf("\t\t\t_______________________________________________________________________________________________\n\n");
                     sleep(2);
-                    main();
+                    login();
                 }  
 
             }
@@ -199,9 +202,12 @@ void login(void)
                     sleep(3);
                     login();
                 }
-            fclose(studentPtr);
+                fclose(studentPtr);
             
             }
+            break;
+        case 0:
+            menu();
             break;
         default:
             login();
@@ -261,9 +267,11 @@ void user(void)
             updateStudent();
             user();
             break;
-    
-        default:
+        case 0:
             main();    
+            break;
+        default:
+            user();
             break;
     }
 }
@@ -400,7 +408,6 @@ void menu(void)
         break;
     default:
         puts("Invalid entry");
-        sleep(2);
         menu();
         break;
     }

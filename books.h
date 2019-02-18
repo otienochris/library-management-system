@@ -10,7 +10,6 @@ typedef struct
     int r_day, r_month, r_year; // return day,month,year
 }DATE;
 
-
 // struct used to store issuedbook info
 typedef struct
 {
@@ -34,6 +33,7 @@ typedef struct
 } STUDENT;
 
 void menu(void);
+void searchissued(void);
 
 //  global pointers (set to null to avoid segmentation faults)
 FILE *bookPtr = NULL, *studentPtr = NULL, *userPtr = NULL , *issuedBookPtr = NULL;
@@ -562,15 +562,20 @@ void viewIssuedBook(void)
         int choice;
 
         printf("\v\v\v\v\v\v\v\t\t\t\t\t\t\t\t######################################\n");
-        printf("\t\t\t\t\t\t\t\tEnter 0 to go back to the main menu ->\t");
+        printf("\t\t\t\t\t\t\t\tEnter 1 to filter\n\t\t\t\t\t\t\t\tEnter 0 to go back to the main menu \n\t\t\t\t\t\t\t\t->\t");
         // printf("%s", "\t\t(Enter your choice here)->\t");
 
         scanf("%d", &choice);
 
-        if (choice == 0)
+        if (choice == 1)
+        {
+            searchissued();
+        }
+        else
         {
             // goes to the customized librabrian view
         }
+        
     }
 }
 
@@ -607,18 +612,18 @@ void updateBook(void)
             // set cursor at the begining of the record 
             fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
 
-            puts("\v\v\t\t\t\t\t_________________________________________________________________\n");
-            printf("\t\t\t\t\t| Old record | -> \t'%-6d%-16s%-11s%u'\n", book.id, book.title, 
-                    book.author, book.copies);
-            puts("\t\t\t\t\t_________________________________________________________________\v");
+            puts("\v\v\t\t\t\t\t___________________________________________________________________________\n");  
+            printf("\t\t\t\t\t| Old record | -> \t'%-6d%-16s%-11s%-10u%-10u'\n", book.id, book.title, 
+                    book.author, book.rack, book.copies);
+            puts("\t\t\t\t\t___________________________________________________________________________\v");
 
             printf("%s", "\v\v\t\t\t\t\tEnter the new title, author, rack_no. and copies (eg c-program chris-o 98)\n\t\t\t\t\t -> \t");
             scanf("%29s%29s",book.title, book.author);
 
             unsigned int copies, rack;
             scanf("%u%u", &rack, &copies);
-            book.copies = copies;
             book.rack = rack;
+            book.copies = copies;
 
             // set cursor at the begining of the record 
             fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
@@ -975,4 +980,90 @@ void suggestBook(void)
         }
 
     }
+}
+
+// filters the issued book either by student id or by book id
+void searchissued(void)
+{
+    system("clear");
+
+    puts("\v\t\t\t\t\t\t\t\t```````````````````````````````````");
+    printf("%s","\t\t\t\t\t\t\t\t\t\033[22;34mFILTER ISSUED BOOK\033[0m\n");
+    puts("\t\t\t\t\t\t\t\t```````````````````````````````````\v\v\v");
+    issuedBookPtr = fopen("issuedBook.dat", "rb+");
+
+    if (issuedBookPtr == NULL) {
+        printf("\v\v\t\t\tError: Could not open the required files");
+    }
+    else
+    {
+        int choice;
+        puts("\v\t\t\t1. Filter by student id\n"
+            "\t\t\t2. Filter by Book id\n");
+        printf("\v\t\t\t->\t");
+        scanf("%d", &choice);
+
+        unsigned int student_id;
+        unsigned int book_id;
+        
+        switch (choice)
+        {
+            case 1:
+                printf("\v\v\t\t\tEnter the user id to search\t\t->\t");
+                scanf("%u", &student_id);
+
+                puts("\v\v\t\t\t\t\tStudent_id\tBook_id\t\tFrom\t\t  To");
+                puts("\t\t\t\t\t________________________________________________________________________________\n");
+                while(!feof(issuedBookPtr))
+                {
+                    ISSUEDBOOK issuedbook;
+                    fread(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
+                    if (student_id == issuedbook.student_id) 
+                    {
+                        printf("\t\t\t\t\t%10d%10d", issuedbook.student_id, issuedbook.book_id);
+                        printf("\t\t%2d/%2d/%4d",issuedbook.date.b_day,issuedbook.date.b_month,issuedbook.date.b_year);
+                        printf("\t%2d/%2d/%4d\n",issuedbook.date.r_day, issuedbook.date.r_month, issuedbook.date.r_year);
+                        puts("\t\t\t\t\t`````````````````````````````````````````````````````````````````````````````````\n");
+                    }
+                }
+                fclose(issuedBookPtr);
+                break;
+            case 2:
+                printf("\v\v\t\t\tEnter the book id to search\t\t->\t");
+                scanf("%u", &book_id);
+
+                puts("\v\v\t\t\t\t\tStudent_id\tBook_id\t\tFrom\t\t  To");
+                puts("\t\t\t\t\t________________________________________________________________________________\n");
+                while(!feof(issuedBookPtr))
+                {
+                    ISSUEDBOOK issuedbook;
+                    fread(&issuedbook, sizeof(ISSUEDBOOK), 1, issuedBookPtr);
+                    if (book_id == issuedbook.book_id) {
+                        printf("\t\t\t\t\t%10d%10d", issuedbook.student_id, issuedbook.book_id);
+                        printf("\t\t%2d/%2d/%4d",issuedbook.date.b_day,issuedbook.date.b_month,issuedbook.date.b_year);
+                        printf("\t%2d/%2d/%4d\n",issuedbook.date.r_day, issuedbook.date.r_month, issuedbook.date.r_year);
+                        puts("\t\t\t\t\t`````````````````````````````````````````````````````````````````````````````````\n");
+                    }
+                }
+                fclose(issuedBookPtr);
+                break;
+
+            default:
+                break;
+        }        
+        puts("\v");
+        int choice2;
+
+        printf("\v\v\v\v\v\v\v\t\t\t\t\t\t\t\t######################################\n");
+        printf("\t\t\t\t\t\t\t\tEnter 0 to go back to the main menu ->\t");
+        // printf("%s", "\t\t(Enter your choice here)->\t");
+
+        scanf("%d", &choice2);
+
+        if (choice2 == 0)
+        {
+            // goes to the customized librabrian view
+        }
+    }
+
 }

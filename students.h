@@ -128,7 +128,7 @@ void viewStudents(void)
     system("clear");
 
     puts("\v\t\t\t\t\t\t\t\t\t````````````````````````````````");
-    puts("\t\t\t\t\t\t\t\t\t   \033[22;34mALIST OF ALL STUDENTS\033[0m\n");
+    puts("\t\t\t\t\t\t\t\t\t   \033[22;34mA LIST OF ALL STUDENTS\033[0m\n");
     puts("\t\t\t\t\t\t\t\t\t````````````````````````````````\v\v");
 
     studentPtr = fopen("student.dat", "rb+");
@@ -139,14 +139,15 @@ void viewStudents(void)
     }
     else
         {
-            puts("\t   id\t\t\tfirstName\t\t      lastName   \tD.O.B\t\t\t\tfaculty   \t\t    depart't\t\t\tcourse");
+            puts("\t id\t\tfirstName\t\t  lastName   \t\t\t\t D.O.B\t\tfaculty   \t\t     department\t\t\tcourse");
             puts("\t_____________________________________________________________________________________________________________________________________________________________________________________________\v");
+            
             while (!feof(studentPtr))
             {
                 int result = fread(&student2, sizeof(STUDENT2), 1, studentPtr);
                 if (result != 0 && student2.id != 0)
                 {
-                    printf("\t  %u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
+                    printf(" \t%-15u%-29s%-29s\t%2u/%2u/%-4u\t%-29s%-29s%-29s\n",
                     student2.id, student2.fname, student2.lname,
                     student2.day,student2.month,student2.year,
                     student2.faculty,student2.department,student2.course_title
@@ -523,25 +524,26 @@ void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
             
             if (student2.id != 0 && student2.id == id && strcmp(student2.fname, fname) == 0 && (result != 0) )
                     { 
-                    puts("\v\t\t```````````````````````````````````````` ");
+                    puts("\v\t\t****************************************");
                     puts("\t\t\t\033[22;34mBios info:\033[0m\v");
-                    puts("\t\t```````````````````````````````````````` ");
+                    puts("\t\t****************************************");
                     puts("\v\t\t__________________________________________________________________________________________________________________________________________________________________\v");
-                    puts("\t\t\t   id\t\t\t\tfirstName\t\t      lastName   \tD.O.B");
+                    puts("\t\t\t   id\t\tfirstName\t\t      lastName   \t\t\tD.O.B");
                     puts("\t\t__________________________________________________________________________________________________________________________________________________________________\v");
                     
-                    printf("\t\t\t  %u%29s%29s\t\t%u/%u/%u\n",
+                    printf("\t\t\t  %-15u%-29s%-29s\t%u/%u/%u\n",
                         student2.id, student2.fname, student2.lname,
                         student2.day,student2.month,student2.year
                         );
                     puts("\v\t\t```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
 
-                    puts("\v\t\t```````````````````````````````````````` ");
+                    puts("\v\v\t\t****************************************");
                     puts("\t\t\t\033[22;34mEducation info:\033[0m\v");
-                    puts("\t\t```````````````````````````````````````` ");
-                    printf("\v\v\t\t\tfaculty   \t\t    depart't\t\t\tcourse\n");
+                    puts("\t\t****************************************");
+                    puts("\v\v\t\t__________________________________________________________________________________________________________________________________________________________________\v");
+                    printf("\t\t\tfaculty   \t\t    depart't\t\t\tcourse\n");
                     puts("\t\t__________________________________________________________________________________________________________________________________________________________________\v");
-                    printf("%29s%29s%29s\n",student2.faculty,student2.department,student2.course_title);
+                    printf("\t\t\t%-29s%-29s%-29s\n",student2.faculty,student2.department,student2.course_title);
                          
                 puts("\v\t\t```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
                 student_found = 'y'; // stops the search when student found
@@ -552,12 +554,12 @@ void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
 
 
 
-        puts("\v\v\v\t\t\t\t\t\t\t\t\t```````````````````````````````````````` ");
+        puts("\v\v\v\t\t\t\t\t\t\t\t\t**************************************** ");
         puts("\t\t\t\t\t\t\t\t\t\t\033[22;34mBORROWED BOOKS\033[0m\v");
-        puts("\t\t\t\t\t\t\t\t\t```````````````````````````````````````` ");
+        puts("\t\t\t\t\t\t\t\t\t**************************************** ");
 
         puts("\v\v\t\t\t\t\t\t___________________________________________________________________________________");    
-        puts("\v\t\t\t\t\t\t\t  Book_id\t\tFrom\t\t  To");
+        puts("\v\t\t\t\t\t\t\tBook_id  \t\tFrom\t\t  To");
         puts("\t\t\t\t\t\t___________________________________________________________________________________");    
 
         // checks if the user borrowed a book
@@ -569,9 +571,9 @@ void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
             // checks for matching student id
             if (result != 0 && issuedbook.student_id == id) 
             {
-                printf("\n\t\t\t\t\t\t\t%10d", issuedbook.book_id);
-                printf("\t\t%2d/%2d/%4d",issuedbook.date.b_day,issuedbook.date.b_month,issuedbook.date.b_year);
-                printf("\t%2d/%2d/%4d\n",issuedbook.date.r_day, issuedbook.date.r_month, issuedbook.date.r_year);
+                printf("\n\t\t\t\t\t\t\t%-10d", issuedbook.book_id);
+                printf("\t\t%2d/%2d/%-4d",issuedbook.date.b_day,issuedbook.date.b_month,issuedbook.date.b_year);
+                printf("\t%2d/%2d/%-4d\n",issuedbook.date.r_day, issuedbook.date.r_month, issuedbook.date.r_year);
                 puts("\t\t\t\t\t\t````````````````````````````````````````````````````````````````````````````````````");    
             }
         }
@@ -606,6 +608,11 @@ void accountDetails(int SIZE, unsigned int id, char fname[SIZE])
 void passReset(int SIZE, char lname[SIZE], unsigned int day,unsigned int month,unsigned int year)
 {
     system("clear");
+
+    puts("\v\t\t\t\t\t\t\t\t\t````````````````````````````````");
+    puts("\t\t\t\t\t\t\t\t\t\t   \033[22;34mRECORY DETAILS\033[0m\n");
+    puts("\t\t\t\t\t\t\t\t\t````````````````````````````````\v\v");
+
     studentPtr = fopen("student.dat", "rb+");
     if (studentPtr == NULL) {
         puts("Error: Could not open the student records");
@@ -613,9 +620,9 @@ void passReset(int SIZE, char lname[SIZE], unsigned int day,unsigned int month,u
     else
     {
         char stop_search = 'n';
-        puts("\v\v\t\t__________________________________________________________________________________________________________________________________________________________________\v");
-        puts("\t\t   id\t\t\tfirstName\t\t      lastName   D.O.B\t\t\t\tfaculty   \t\t    depart't\t\t\tcourse");
-        puts("\t\t__________________________________________________________________________________________________________________________________________________________________\v");
+        puts("\v\v\v\v\t id\t\tfirstName\t\t  lastName   \t\t\t\t D.O.B\t\tfaculty   \t\t     department\t\t\tcourse");
+        puts("\t_____________________________________________________________________________________________________________________________________________________________________________________________\v");
+             
         while (!feof(studentPtr) && stop_search == 'n')
         {
             STUDENT student2;
@@ -623,18 +630,19 @@ void passReset(int SIZE, char lname[SIZE], unsigned int day,unsigned int month,u
             
             if ( strcmp(student2.lname, lname) == 0 && student2.day == day && student2.month == month && student2.year == year && (result != 0) )
             {
-                printf("\t\t  %u%29s%29s\t%u/%u/%u%29s%29s%29s\n",
+                printf(" \t%-15u%-29s%-29s\t%2u/%2u/%-4u\t%-29s%-29s%-29s\n",
                     student2.id, student2.fname, student2.lname,
                     student2.day,student2.month,student2.year,
                     student2.faculty,student2.department,student2.course_title
-                    ); 
-            puts("\v\t\t```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
+                    );  
+                    puts("\n\t`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````\n");
+
             stop_search = 'y'; // stops the search when student found
             
             }
         }
         if (stop_search == 'n') {
-            printf("Invalid entry");
+            printf("\v\v\t\t\tError: No such student exists");
         }
         puts("\v");
 
