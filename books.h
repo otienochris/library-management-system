@@ -101,21 +101,24 @@ void addBook(void)
 
         printf("%s", "\n\v\t\t\tEnter publication_year, copies and rack_number. (e.g 2013 20 122 )\t\t\t\t>\t");
         
-        unsigned int copies, rack, pub_year;
+        unsigned int rack, pub_year;
+        signed int copies;
         scanf("%u%u%u",&pub_year,&copies, &rack );
         book.rack = rack;
-        if (copies < 1 ) {
+
+        
+        while (copies < 1  ) {
             puts("\v\t\t\tEnter a value greater than zero for the copies!");
-            puts("\t\t\t->\t!");
+            printf("\t\t\t->\t");
             scanf("%u", &copies);
-            book.copies = copies;
         }
 
         book.copies = copies;
+    
         book.pub_year = pub_year;
         
-        // scanf("%u%u%u", book.pub_year, book.copies, book.rack);
-        // write the details of the new book to file
+
+      
         fwrite(&book, sizeof(BOOK), 1, bookPtr);
         printf("%s", "\n\v\t\t\tRecords saved successfully\t>\t");
         
