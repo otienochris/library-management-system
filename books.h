@@ -2,8 +2,11 @@
 #include <time.h>
 
 void suggestBook(void);
+int leapYear (int year);
+
 void boro_return_date(int day, int month, int year, int *r_d, int *r_m, int *r_y);
 
+// borrow return dates
 typedef struct 
 {
     int b_day, b_month, b_year; // borrowed day,month,year
@@ -20,8 +23,8 @@ typedef struct
 // struct to store book info
 typedef struct
 {
-    unsigned int id, copies, rack;
-    char title[30], author[30];
+    unsigned int id, copies, rack, pub_year;
+    char title[30], author[30], publisher[30], edition[5];
 } BOOK;
 
 // struct used to student info
@@ -45,7 +48,9 @@ ISSUEDBOOK issuedbook;
 // a function that adds a book(s) to books.dat file    
 void addBook(void)
 {
-    system("clear");
+    system("clear"); // works on linux (comment this line while using windows)
+    // system("cls")  // uncomment this line while on windows
+
     unsigned int book_id; // to hold the id temporarily for verification
 
     // initial book struct
@@ -91,9 +96,18 @@ void addBook(void)
         puts("\v\v\t\t\t---------------------------------------------------------------------------------------------------");
         puts("\n\t\t\tNB:\tMultiple names must be separated using a hyphen(eg c-programming otieno-chris 900)");
         puts("\n\t\t\t---------------------------------------------------------------------------------------------------");
-        printf("%s", "\n\v\t\t\tEnter title, author, copies and rack_no. (e.g c-programming christopher 100 )\t>\t");
+        printf("%s", "\n\v\t\t\tEnter title, author, publisher and edition. (e.g c-programming christopher Longhorn 4th )\t>\t");
+        scanf("%29s%29s%29s%9s", book.title, book.author, book.publisher, book.edition);
 
-        scanf("%29s%29s%u%u", book.title, book.author, &book.copies, &book.rack);
+        printf("%s", "\n\v\t\t\tEnter publication_year, copies and rack_number. (e.g 2013 20 122 )\t\t\t\t>\t");
+        
+        unsigned int copies, rack, pub_year;
+        scanf("%u%u%u",&pub_year,&copies, &rack );
+        book.rack = rack;
+        book.copies = copies;
+        book.pub_year = pub_year;
+        
+        // scanf("%u%u%u", book.pub_year, book.copies, book.rack);
         // write the details of the new book to file
         fwrite(&book, sizeof(BOOK), 1, bookPtr);
         printf("%s", "\n\v\t\t\tRecords saved successfully\t>\t");
@@ -131,7 +145,8 @@ void addBook(void)
 // search for a book
 void searchBook(void)
 {
-    system("clear"); // works on ubuntu (system("cls") on windows)
+    system("clear"); // works on linux (comment this line while using windows)
+    // system("cls")  // uncomment this line while on windows
 
     puts("\v\t\t\t\t\t\t\t\t\t\t````````````````````````");
     puts("\t\t\t\t\t\t\t\t\t\t\t\033[22;34mSEARCH BOOK\033[0m");
@@ -164,9 +179,9 @@ void searchBook(void)
                 printf("%s","\v\v\n\t\t\t\t\t\tEnter the title of the book to search:\t\t\t->\t");
                 scanf("%29s", search_title);
 
-                puts("\v\v\t\t\t\t\t\t________________________________________________________________________________________\v");
-                printf("%s","\t\t\t\t\t\t  id\t\t\tTitle\t\t\t\t  Author\t\tCopies\n");            
-                puts("\t\t\t\t\t\t________________________________________________________________________________________\v");
+                puts("\v\v\t\t\t_____________________________________________________________________________________________________________________________________________________");    
+                puts("\v\t\t\tBook_id\t\tTitle\t\t\tAuthor\t\t\t\t    publisher\t\t\tedition\t   pub_year\tCopies\t  Rack_no.");
+                puts("\t\t\t_____________________________________________________________________________________________________________________________________________________");
 
                 while ( !feof(bookPtr) && done_search == 'n')
                 {
@@ -177,8 +192,8 @@ void searchBook(void)
                     if ( (strcmp(book.title, search_title) == 0) && (result != 0) )
                         {
                         
-                            printf("\t\t\t\t\t%15d\t%30s%30s\t%15d\n", book.id, book.title, book.author, book.copies);
-                            puts("\v\t\t\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````");
+                            printf("\n\t\t\t%-10u %-29s%-39s%-29s%-10s%-4u\t%-10u%-10u\n", book.id, book.title, book.author, book.publisher, book.edition,book.pub_year, book.copies, book.rack);
+                            puts("\t\t\t`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
 
                             // if copies are zero then provide suggestion by title or author of other books in the lib
                             if (book.copies == 0) 
@@ -207,18 +222,18 @@ void searchBook(void)
                 // printf("%s", "\v\t\t(Enter the title here)->\t");
                 scanf("%d", &search_id);
 
-                printf("%s","\v\v\t\t\t\t\t\tid\tTitle\t\t\t\tAuthor\t\t\t\tCopies\n");            
-                puts("\t\t\t\t\t\t________________________________________________________________________________________\v");
-                    
+                puts("\v\v\t\t\t_____________________________________________________________________________________________________________________________________________________");    
+                puts("\v\t\t\tBook_id\t\tTitle\t\t\tAuthor\t\t\t\t    publisher\t\t\tedition\t   pub_year\tCopies\t  Rack_no.");
+                puts("\t\t\t_____________________________________________________________________________________________________________________________________________________");
+
                 while (!feof(bookPtr) && done_search == 'n')
                 {
                     BOOK book;
                     int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
                     if ( (result != 0) &&  book.id == search_id  )
                         {
-                            printf("\t\t\t\t\t\t%d\t%s\t\t\t\t%s\t\t\t\t%d\n", book.id, book.title, book.author, book.copies);
-                            
-                            puts("\v\t\t\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````");
+                            printf("\n\t\t\t%-10u %-29s%-39s%-29s%-10s%-4u\t%-10u%-10u\n", book.id, book.title, book.author, book.publisher, book.edition,book.pub_year, book.copies, book.rack);
+                            puts("\t\t\t`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
 
                              // if copies are zero then provide suggestion by title or author of other books in the lib
                             if (book.copies == 0) 
@@ -264,8 +279,8 @@ void searchBook(void)
 // a function that returns all the books' inventory
 void viewBooks(void)
 {
-    system("clear"); // works only on ubuntu
-    // system("COLOR FC");
+    system("clear"); // works on linux (comment this line while using windows)
+    // system("cls")  // uncomment this line while on windows
     
     puts("\v\t\t\t\t\t\t\t\t\t\t\t\033[22;34mLIST OF BOOKS\033[0m");
     puts("\t\t\t\t\t\t\t\t\t\t`````````````````````````````");
@@ -278,9 +293,9 @@ void viewBooks(void)
     }
     else
     {
-        puts("\t\t\t\t________________________________________________________________________________________________________________________");    
-        puts("\v\t\t\t\t  Book_id\t\t\tTitle\t\t\t\tAuthor\t\t  Copies\t  Rack_no.");
-        puts("\t\t\t\t________________________________________________________________________________________________________________________");
+        puts("\t\t\t_____________________________________________________________________________________________________________________________________________________");    
+        puts("\v\t\t\tBook_id\t\tTitle\t\t\tAuthor\t\t\t\t    publisher\t\t\tedition\t   pub_year\tCopies\t  Rack_no.");
+        puts("\t\t\t_____________________________________________________________________________________________________________________________________________________");
         
 
         while (!feof(bookPtr))
@@ -289,11 +304,12 @@ void viewBooks(void)
             int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
             if(result != 0 && book.id != 0)
             {
-                printf("\n\t\t\t\t %10d%30s%30s%20d%15d\n", book.id, book.title, book.author, book.copies, book.rack);
-                puts("\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
+                printf("\n\t\t\t%-10u %-29s%-39s%-29s%-10s%-4u\t%-10u%-10u\n", book.id, book.title, book.author, book.publisher, book.edition,book.pub_year, book.copies, book.rack);
+                puts("\t\t\t`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
+            
             }
         }
-        puts("\v\t\t\t\t________________________________________________________________________________________________________________________");
+        puts("\v\t\t\t_____________________________________________________________________________________________________________________________________________________");
 
         fclose(bookPtr);
 
@@ -314,7 +330,9 @@ void viewBooks(void)
 // a function that's used to issue books and update all the dependent records
 void issueBook(void)
 {
-    system("clear");
+    system("clear"); // works on linux (comment this line while using windows)
+    // system("cls")  // uncomment this line while on windows
+    
     int TRU = 0, FOLS = 1; // variable to control entry into loops or functions
     int x = FOLS, y = FOLS;; // variable to control the flow of execution of command
     unsigned int student_id, book_id;
@@ -337,20 +355,19 @@ void issueBook(void)
     {
         // time 
 
-        int leapYear (int year);
 
-        // struct containing the time members
-        time_t t = time(NULL);
-        struct tm tm = *localtime(&t);
+        // // struct containing the time members
+        // time_t t = time(NULL);
+        // struct tm tm = *localtime(&t);
 
-        // the current and future time variables
-        int day = tm.tm_mday, 
-            month = tm.tm_mon + 1, 
-            year = tm.tm_year + 1900
-            ;
+        // // the current and future time variables
+        // int day = tm.tm_mday, 
+        //     month = tm.tm_mon + 1, 
+        //     year = tm.tm_year + 1900
+        //     ;
         
-        // displaying current date of the system
-        printf("\nCurrent Date: %d/%d/%d", day, month, year);
+        // // displaying current date of the system
+        // printf("\nCurrent Date: %d/%d/%d", day, month, year);
 
 
 
@@ -612,27 +629,30 @@ void updateBook(void)
             // set cursor at the begining of the record 
             fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
 
-            puts("\v\v\t\t\t\t\t___________________________________________________________________________\n");  
-            printf("\t\t\t\t\t| Old record | -> \t'%-6d%-16s%-11s%-10u%-10u'\n", book.id, book.title, 
-                    book.author, book.rack, book.copies);
-            puts("\t\t\t\t\t___________________________________________________________________________\v");
+            puts("\v\v\t\t\t___________________________________________________________________________________________________________________________________________________________"); 
+            printf("\n\t\t\t| Old record | -> %-10u %-29s%-39s%-29s%-10s%-4u\t%-10u%-10u\n", book.id, book.title, book.author, book.publisher, book.edition,book.pub_year, book.copies, book.rack);
+            puts("\t\t\t___________________________________________________________________________________________________________________________________________________________");    
 
-            printf("%s", "\v\v\t\t\t\t\tEnter the new title, author, rack_no. and copies (eg c-program chris-o 98)\n\t\t\t\t\t -> \t");
-            scanf("%29s%29s",book.title, book.author);
+            printf("%s", "\n\v\t\t\tEnter title, author, publisher and edition. (e.g c-programming christopher Longhorn 4th )\t>\t");
+            scanf("%29s%29s%29s%9s", book.title, book.author, book.publisher, book.edition);
 
-            unsigned int copies, rack;
-            scanf("%u%u", &rack, &copies);
+            printf("%s", "\n\v\t\t\tEnter publication_year, copies and rack_number. (e.g 2013 20 122 )\t>\t");
+
+            unsigned int copies, rack, pub_year;
+            scanf("%u%u%u",&pub_year,&copies, &rack );
             book.rack = rack;
             book.copies = copies;
+            book.pub_year = pub_year;
 
             // set cursor at the begining of the record 
             fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
             fwrite(&book, sizeof(BOOK), 1, bookPtr);
             puts("\v\v\v\v\t\t\t\t\tRecord is successfully updated ");
 
-            puts("\v\v\t\t\t\t\t_________________________________________________________________\n");
-            printf("\t\t\t\t\t| New record | ->\t '%-6d%-16s%-11s%u'\n", book.id, book.title, book.author, book.copies);
-            puts("\t\t\t\t\t_________________________________________________________________\v");
+
+            puts("\v\v\t\t\t___________________________________________________________________________________________________________________________________________________________"); 
+            printf("\n\t\t\t| New record | -> %-10u %-29s%-39s%-29s%-10s%-4u\t%-10u%-10u\n", book.id, book.title, book.author, book.publisher, book.edition,book.pub_year, book.copies, book.rack);
+            puts("\t\t\t___________________________________________________________________________________________________________________________________________________________");    
 
             stop = 'y'; // terminate the loop
             // sleep(3);
@@ -721,18 +741,18 @@ void deleteBook(void)
                 
                 // set cursor at the begining of the record 
                 fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
-                puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________\n");
-                printf("\t\t\t\t\tRecord to be deleted -> \t(id)%-6d%-16s %-11s %u\n", book.id, book.title, 
-                        book.author, book.copies);
-                puts("\t\t\t\t\t________________________________________________________________________________________");
+
+                puts("\v\v\v\v\t\t\t________________________________________________________________________________________________________________________________________________________________"); 
+                printf("\t\t\tRecord to be deleted -> (id)%-10u%-29s%-39s%-29s%-10s%-4u %-10u%-10u\n", book.id, book.title, book.author, book.publisher, book.edition,book.pub_year, book.copies, book.rack);
+                puts("\t\t\t________________________________________________________________________________________________________________________________________________________________"); 
             
                 int confirm;
                 printf("\v\v\v\t\t\t\t\tConfirm deletion by entering 1 otherwise 0 (then press enter key)\t\t ->\t");
                 scanf("%d", &confirm);
                 if (confirm == 1) 
                 {
-                    // seta blank record to overwrite the record    
-                    BOOK blankbook = {0, 0, 0,"", ""};
+                    // seta blank record to overwrite the record  
+                    BOOK blankbook = {0, 0, 0, 0,"", "","",""};
 
                     // set cursor at the begining of the record 
                     fseek(bookPtr, (count - 1)*sizeof(BOOK), SEEK_SET);
@@ -743,11 +763,10 @@ void deleteBook(void)
                 }
                 else
                 {
-                    puts("\v\v\v\v\t\t\t\t\t________________________________________________________________________________________");
-                    printf("\t\t\t\t\tRetained record -> \t%-6d%-16s%-11s%u\n\n", book.id, book.title, 
-                        book.author, book.copies);
-                    puts("\t\t\t\t\t________________________________________________________________________________________");
-                      
+                    puts("\v\v\v\v\t\t\t________________________________________________________________________________________________________________________________________________________________"); 
+                    printf("\t\t\tRetained record -> (id)%-10u%-29s%-39s%-29s%-10s%-4u %-10u%-10u\n", book.id, book.title, book.author, book.publisher, book.edition,book.pub_year, book.copies, book.rack);
+                    puts("\t\t\t________________________________________________________________________________________________________________________________________________________________"); 
+            
                 }
                 
 
@@ -921,9 +940,10 @@ void suggestBook(void)
                 
 
                 puts("\v\v"); //just to do add vertical tab
-                puts("\t\t\t\t________________________________________________________________________________________________________________________");    
-                puts("\v\t\t\t\t\tBook_id\t\t\tTitle\t\t\t\tAuthor\t\t\tCopies");
-                puts("\t\t\t\t________________________________________________________________________________________________________________________");
+                puts("\t\t\t_____________________________________________________________________________________________________________________________________________________");    
+                puts("\v\t\t\tBook_id\t\tTitle\t\t\tAuthor\t\t\t\t    publisher\t\t\tedition\t   pub_year\tCopies\t  Rack_no.");
+                puts("\t\t\t_____________________________________________________________________________________________________________________________________________________");
+        
                 // lists the info of books that has been written by the entered author
                 while (!feof(bookPtr))
                     {   
@@ -931,12 +951,12 @@ void suggestBook(void)
                         int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
                         if(result != 0 && book.id != 0 && strstr(book.author, author) != NULL)
                         {
-                            printf("\n\t\t\t\t %10d%30s%30s%20d\n", book.id, book.title, book.author, book.copies);
-                            puts("\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
+                            printf("\n\t\t\t%-10u %-29s%-39s%-29s%-10s%-4u\t%-10u%-10u\n", book.id, book.title, book.author, book.publisher, book.edition,book.pub_year, book.copies, book.rack);
+                            puts("\t\t\t`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
                             books_found = 'y'; 
                         }
                     }
-                    puts("\v\t\t\t\t________________________________________________________________________________________________________________________");
+                    puts("\v\t\t\t_____________________________________________________________________________________________________________________________________________________");
                     
                     if (books_found == 'n')
                             puts("\n\t\t\t\tOops! Could not get a suggestion from our databases");
@@ -950,10 +970,10 @@ void suggestBook(void)
                 scanf("%39s", title);
 
                 puts("\v\v"); //just to do add vertical tab
-                puts("\t\t\t\t________________________________________________________________________________________________________________________");    
-                puts("\v\t\t\t\t\tBook_id\t\t\tTitle\t\t\t\tAuthor\t\t\tCopies");
-                puts("\t\t\t\t________________________________________________________________________________________________________________________");
-
+                puts("\t\t\t_____________________________________________________________________________________________________________________________________________________");    
+                puts("\v\t\t\tBook_id\t\tTitle\t\t\tAuthor\t\t\t\t    publisher\t\t\tedition\t   pub_year\tCopies\t  Rack_no.");
+                puts("\t\t\t_____________________________________________________________________________________________________________________________________________________");
+        
                 // lists the info of books that contains the entered title
                 while (!feof(bookPtr))
                     {   
@@ -961,12 +981,13 @@ void suggestBook(void)
                         int  result = fread(&book, sizeof(BOOK), 1, bookPtr);
                         if(result != 0 && book.id != 0 && strstr(book.title, title) != NULL)
                         {
-                            printf("\n\t\t\t\t %10d%30s%30s%20d\n", book.id, book.title, book.author, book.copies);
-                            puts("\t\t\t\t````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
+                              printf("\n\t\t\t%-10u %-29s%-39s%-29s%-10s%-4u\t%-10u%-10u\n", book.id, book.title, book.author, book.publisher, book.edition,book.pub_year, book.copies, book.rack);
+                            puts("\t\t\t`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````");
                             books_found2 = 'y';
                         }
                     }
-                    puts("\v\t\t\t\t________________________________________________________________________________________________________________________");
+                puts("\v\t\t\t_____________________________________________________________________________________________________________________________________________________");
+
                 if (books_found2 == 'n')
                     puts("\n\t\t\t\t\t\tOops! Could not get a suggestion from our databases");
 
