@@ -1,11 +1,40 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h> // a header file to obtain system time
 #include <unistd.h> // clear-screen
-#include <string.h>
 #include "books.h"  // contain functions that involves the books
 #include "students.h"  // contains all functions that involve the students
 #define SIZE 40 // a global string size
+
+
+
+
+/* 
+    N/B...TO LOG IN AS ADMIN (LIBRARIAN) TO VIEW MANY OF THE FUNCTIONALITIES WITHOUT DELETING THE FILES USE;
+    
+    USERNAME: chali
+    PASSWORD: chali
+    
+    Else: comment the verification part then access the system to add an admin then uncomment it.
+
+    Register part of this system registers the students (users) and not the admin.
+ */
+
+
+
+/* 
+    Group members:
+    
+    1. Otieno Christopher   -> S13/09426/17 (lead)
+    2. Wachiye Siranjofu    -> S13/09418/17
+    3. Christine Olondo     -> S13/09431/17
+    4. Collins Kilel        -> S13/10816/17
+    5. Nicholus Sila        -> S13/10780/17
+ */
+
+
+
 
 typedef struct
 {
@@ -207,7 +236,7 @@ void login(void)
             }
             break;
         case 0:
-            menu();
+            main();
             break;
         default:
             login();
